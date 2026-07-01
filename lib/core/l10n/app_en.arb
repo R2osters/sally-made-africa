@@ -1,0 +1,7 @@
+{
+  "@@locale": "en",
+  "appTitle": "TravelConnect",
+  "@appTitle": {
+    "description": "The title of the application"
+  }
+}
