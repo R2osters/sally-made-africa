@@ -1,0 +1,9 @@
+{
+  "@@locale": "en",
+  "appTitle": "TravelConnect",
+  "@appTitle": {"description": "The application title"},
+  "homeTab": "Home",
+  "myPlansTab": "My Plans",
+  "historyTab": "History",
+  "profileTab": "Profile"
+}
