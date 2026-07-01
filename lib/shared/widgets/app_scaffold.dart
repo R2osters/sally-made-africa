@@ -1,5 +1,6 @@
 // lib/shared/widgets/app_scaffold.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 
 class AppScaffold extends StatelessWidget {
@@ -9,6 +10,7 @@ class AppScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       body: navigationShell,
       bottomNavigationBar: NavigationBar(
@@ -17,13 +19,13 @@ class AppScaffold extends StatelessWidget {
           index,
           initialLocation: index == navigationShell.currentIndex,
         ),
-        destinations: const [
-          NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
+        destinations: [
+          NavigationDestination(icon: const Icon(Icons.home), label: l10n.homeTab),
           NavigationDestination(
-              icon: Icon(Icons.sim_card), label: 'My Plans'),
+              icon: const Icon(Icons.sim_card), label: l10n.myPlansTab),
           NavigationDestination(
-              icon: Icon(Icons.receipt_long), label: 'History'),
-          NavigationDestination(icon: Icon(Icons.person), label: 'Profile'),
+              icon: const Icon(Icons.receipt_long), label: l10n.historyTab),
+          NavigationDestination(icon: const Icon(Icons.person), label: l10n.profileTab),
         ],
       ),
     );
