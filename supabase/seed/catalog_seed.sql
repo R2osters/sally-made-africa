@@ -23,4 +23,5 @@ insert into public.esim_plans
   ('GB', 10, 30, 19.00, '4G/5G', true),
   ('FR', 10, 30, 18.00, '5G', true),
   ('IT', 8, 30, 17.00, '5G', false),
-  ('US', 10, 30, 29.00, '5G/LTE', true);
+  ('US', 10, 30, 29.00, '5G/LTE', true)
+on conflict (country_code, data_gb, validity_days) do nothing;

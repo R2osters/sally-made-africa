@@ -14,7 +14,8 @@ create table if not exists public.esim_plans (
   validity_days int not null,
   price_usd numeric not null,
   network_label text,
-  is_popular boolean not null default false
+  is_popular boolean not null default false,
+  unique (country_code, data_gb, validity_days)
 );
 
 create index if not exists esim_plans_country_code_idx
