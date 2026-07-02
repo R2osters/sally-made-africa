@@ -14,6 +14,7 @@ import '../../features/onboarding/presentation/onboarding_screen.dart';
 import '../../features/onboarding/presentation/splash_screen.dart';
 import '../../features/profile/presentation/profile_screen.dart';
 import '../../features/purchase/presentation/checkout_screen.dart';
+import '../../features/purchase/presentation/payment_method_screen.dart';
 import '../../shared/widgets/app_scaffold.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
@@ -60,6 +61,9 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
           path: '/plans/:id', builder: (c, s) => const PlanDetailsScreen()),
       GoRoute(path: '/checkout', builder: (c, s) => const CheckoutScreen()),
+      GoRoute(
+          path: '/payment-method',
+          builder: (c, s) => const PaymentMethodScreen()),
     ],
   );
 });
