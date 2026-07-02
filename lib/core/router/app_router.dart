@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../features/auth/presentation/login_screen.dart';
 import '../../features/auth/presentation/signup_screen.dart';
 import '../../features/catalog/presentation/country_select_screen.dart';
+import '../../features/catalog/presentation/plan_select_screen.dart';
 import '../../features/history/presentation/history_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
 import '../../features/my_plans/presentation/my_plans_screen.dart';
@@ -49,6 +50,11 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
           path: '/country-select',
           builder: (c, s) => const CountrySelectScreen()),
+      GoRoute(
+        path: '/country/:code/plans',
+        builder: (c, s) =>
+            PlanSelectScreen(countryCode: s.pathParameters['code']!),
+      ),
     ],
   );
 });
