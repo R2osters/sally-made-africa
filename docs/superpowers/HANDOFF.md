@@ -85,3 +85,29 @@ flutter test                 # suite complète (doit rester verte : 8/8 actuelle
 # lancer l'app avec de vraies creds Supabase :
 flutter run --dart-define=SUPABASE_URL=... --dart-define=SUPABASE_ANON_KEY=...
 ```
+
+## UI Shell (2026-07-02)
+
+Les 12 écrans du mock HTML construits par-dessus Foundation :
+splash → onboarding → login → signup → home → country select → plan select →
+plan details → checkout → payment method → payment processing → success.
+
+- **Thème** : ThemeExtension `AppTokens` (`lib/core/theme/app_tokens.dart`) porte
+  tous les design tokens du HTML (palette bleue du bloc Design-System ; la palette
+  orange par-écran du mock a été volontairement ignorée). Les écrans lisent via
+  `context.tokens`.
+- **Mocké** : auth (login/signup font juste `context.go('/home')`), paiement
+  (`payment_processing_screen` attend 2 s puis navigue). Pas de Supabase Auth réel,
+  pas de gateway.
+- **Réel** : données catalogue via `CatalogRepository` sur les tables Supabase
+  `countries` / `esim_plans` (migration + seed dans `supabase/`).
+- **ÉTAT CONNU** : `Env` contient toujours des creds Supabase placeholder, donc les
+  écrans country select / plan select afficheront `ErrorView` (retry) tant que de
+  vrais creds ne sont pas fournis et que migration + seed n'ont pas tourné. C'est
+  attendu, pas un bug.
+- **NON vérifié de bout en bout sur device/émulateur** — aucun device disponible
+  dans l'environnement de build. Les tests widget passent (32/32) ; un humain doit
+  lancer l'app une fois les vrais creds en place.
+
+Prochains specs (inchangés vs roadmap) : Auth réel, Purchase/PaymentService réel,
+Notifications/History.
