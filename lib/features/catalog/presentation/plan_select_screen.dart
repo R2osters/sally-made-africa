@@ -10,6 +10,8 @@ import '../../../shared/widgets/error_view.dart';
 import '../../../shared/widgets/loading_indicator.dart';
 import '../../../shared/widgets/pill_button.dart';
 import '../data/catalog_repository.dart';
+import '../data/models/country.dart';
+import '../../purchase/presentation/purchase_flow_controller.dart';
 
 class PlanSelectScreen extends ConsumerWidget {
   final String countryCode;
@@ -61,7 +63,16 @@ class PlanSelectScreen extends ConsumerWidget {
                         SizedBox(height: t.stackSm),
                         PillButton(
                           label: l10n.selectPlan,
-                          onPressed: () => context.push('/plans/${p.id}'),
+                          onPressed: () {
+                            ref.read(purchaseFlowProvider.notifier).select(
+                                  Country(
+                                      code: countryCode,
+                                      name: countryCode,
+                                      region: ''),
+                                  p,
+                                );
+                            context.push('/plans/${p.id}');
+                          },
                         ),
                       ],
                     ),
