@@ -22,6 +22,6 @@ void main() {
     await tester.pump(const Duration(seconds: 3));
     await tester.pumpAndSettle();
     expect(find.text('Stay connected, anywhere.'), findsNothing);
-    // TODO(task-5): assert onboarding content
+    expect(find.text('Global Connectivity'), findsOneWidget);
   });
 }
