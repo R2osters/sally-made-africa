@@ -1,4 +1,3 @@
-// test/widget_test.dart
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -9,24 +8,20 @@ void main() {
     SharedPreferences.setMockInitialValues({});
   });
 
-  testWidgets('app boots on Home and switches tabs', (tester) async {
+  testWidgets('app boots on splash then advances to onboarding',
+      (tester) async {
     await tester.pumpWidget(
       const ProviderScope(child: TravelConnectApp()),
     );
-    await tester.pumpAndSettle();
+    await tester.pump();
 
-    expect(find.text('Home'), findsWidgets);
+    // Splash tagline visible first.
+    expect(find.text('Stay connected, anywhere.'), findsOneWidget);
 
-    await tester.tap(find.text('My Plans').last);
+    // Advance past the 2s splash timer → onboarding.
+    await tester.pump(const Duration(seconds: 3));
     await tester.pumpAndSettle();
-    expect(find.text('My Plans'), findsWidgets);
-
-    await tester.tap(find.text('History').last);
-    await tester.pumpAndSettle();
-    expect(find.text('History'), findsWidgets);
-
-    await tester.tap(find.text('Profile').last);
-    await tester.pumpAndSettle();
-    expect(find.text('Profile'), findsWidgets);
+    expect(find.text('Stay connected, anywhere.'), findsNothing);
+    // TODO(task-5): assert onboarding content
   });
 }
