@@ -20,7 +20,19 @@ class PlanDetailsScreen extends ConsumerWidget {
     if (plan == null) {
       return Scaffold(
         appBar: AppBar(),
-        body: const Center(child: Text('No plan selected')),
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(l10n.noPlanSelected),
+              SizedBox(height: t.stackMd),
+              PillButton(
+                label: l10n.browsePlans,
+                onPressed: () => context.go('/country-select'),
+              ),
+            ],
+          ),
+        ),
       );
     }
 
@@ -29,25 +41,27 @@ class PlanDetailsScreen extends ConsumerWidget {
       body: ListView(
         padding: EdgeInsets.all(t.stackMd),
         children: [
-          Text('${plan.dataGb}GB Data',
+          Text(l10n.planDataAmount('${plan.dataGb}'),
               style: t.displayLg.copyWith(color: t.onSurface)),
           SizedBox(height: t.base),
           Text('\$${plan.priceUsd.toStringAsFixed(2)}',
               style: t.headlineLg.copyWith(color: t.primary)),
           SizedBox(height: t.stackSm),
-          Text('Valid for ${plan.validityDays} Days',
+          Text(l10n.validForDays(plan.validityDays),
               style: t.bodyMd.copyWith(color: t.onSurfaceVariant)),
           SizedBox(height: t.stackLg),
           Text(l10n.planFeaturesTitle,
               style: t.titleMd.copyWith(color: t.onSurface)),
           SizedBox(height: t.stackSm),
-          _Feature(icon: Icons.speed, label: 'High-Speed 5G/4G', tokens: t),
+          _Feature(icon: Icons.speed, label: l10n.featureHighSpeed, tokens: t),
           _Feature(
               icon: Icons.install_mobile,
-              label: 'Instant Activation',
+              label: l10n.featureInstantActivation,
               tokens: t),
           _Feature(
-              icon: Icons.wifi_tethering, label: 'Hotspot Allowed', tokens: t),
+              icon: Icons.wifi_tethering,
+              label: l10n.featureHotspot,
+              tokens: t),
         ],
       ),
       bottomNavigationBar: Padding(

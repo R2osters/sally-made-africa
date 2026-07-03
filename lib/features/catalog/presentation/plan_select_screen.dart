@@ -22,9 +22,24 @@ class PlanSelectScreen extends ConsumerWidget {
     final t = context.tokens;
     final l10n = AppLocalizations.of(context)!;
     final async = ref.watch(plansProvider(countryCode));
+    final countriesAsync = ref.watch(countriesProvider);
+
+    Country? resolvedCountry;
+    final countriesResult = countriesAsync.valueOrNull;
+    if (countriesResult is Success<List<Country>>) {
+      for (final c in countriesResult.value) {
+        if (c.code == countryCode) {
+          resolvedCountry = c;
+          break;
+        }
+      }
+    }
+    final fallbackCountry =
+        Country(code: countryCode, name: countryCode, region: '');
+    final country = resolvedCountry ?? fallbackCountry;
 
     return Scaffold(
-      appBar: AppBar(title: Text(countryCode)),
+      appBar: AppBar(title: Text(country.name)),
       body: async.when(
         loading: () => const LoadingIndicator(),
         error: (e, _) => ErrorView(
@@ -65,10 +80,7 @@ class PlanSelectScreen extends ConsumerWidget {
                           label: l10n.selectPlan,
                           onPressed: () {
                             ref.read(purchaseFlowProvider.notifier).select(
-                                  Country(
-                                      code: countryCode,
-                                      name: countryCode,
-                                      region: ''),
+                                  country,
                                   p,
                                 );
                             context.push('/plans/${p.id}');

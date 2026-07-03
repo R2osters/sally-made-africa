@@ -108,6 +108,7 @@ plan details → checkout → payment method → payment processing → success.
 - **NON vérifié de bout en bout sur device/émulateur** — aucun device disponible
   dans l'environnement de build. Les tests widget passent (32/32) ; un humain doit
   lancer l'app une fois les vrais creds en place.
+- **Seed partiel** : le seed ne fournit des plans que pour 6 des 14 pays (JP, GB, FR, IT, US ×2) — les autres afficheront une liste de plans vide (pas une erreur).
 
 Prochains specs (inchangés vs roadmap) : Auth réel, Purchase/PaymentService réel,
 Notifications/History.

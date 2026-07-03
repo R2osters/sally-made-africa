@@ -46,7 +46,7 @@ class CheckoutScreen extends ConsumerWidget {
         child: PillButton(
           label: l10n.continueToPayment,
           trailingIcon: Icons.lock,
-          onPressed: () => context.push('/payment-method'),
+          onPressed: plan == null ? null : () => context.push('/payment-method'),
         ),
       ),
     );

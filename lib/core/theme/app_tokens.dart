@@ -95,26 +95,22 @@ class AppTokens extends ThemeExtension<AppTokens> {
     required this.displayLg,
   });
 
-  static const String _fontFamily = 'Inter';
-
   static const _labelSm = TextStyle(
-      fontFamily: _fontFamily, fontSize: 12, height: 16 / 12, fontWeight: FontWeight.w600);
+      fontSize: 12, height: 16 / 12, fontWeight: FontWeight.w600);
   static const _bodyMd = TextStyle(
-      fontFamily: _fontFamily, fontSize: 14, height: 20 / 14, fontWeight: FontWeight.w400);
+      fontSize: 14, height: 20 / 14, fontWeight: FontWeight.w400);
   static const _bodyLg = TextStyle(
-      fontFamily: _fontFamily, fontSize: 16, height: 24 / 16, fontWeight: FontWeight.w400);
+      fontSize: 16, height: 24 / 16, fontWeight: FontWeight.w400);
   static const _titleMd = TextStyle(
-      fontFamily: _fontFamily, fontSize: 20, height: 28 / 20, fontWeight: FontWeight.w600);
+      fontSize: 20, height: 28 / 20, fontWeight: FontWeight.w600);
   static const _headlineLgMobile = TextStyle(
-      fontFamily: _fontFamily, fontSize: 24, height: 32 / 24, fontWeight: FontWeight.w600);
+      fontSize: 24, height: 32 / 24, fontWeight: FontWeight.w600);
   static const _headlineLg = TextStyle(
-      fontFamily: _fontFamily,
       fontSize: 32,
       height: 40 / 32,
       fontWeight: FontWeight.w600,
       letterSpacing: -0.64);
   static const _displayLg = TextStyle(
-      fontFamily: _fontFamily,
       fontSize: 40,
       height: 48 / 40,
       fontWeight: FontWeight.w700,

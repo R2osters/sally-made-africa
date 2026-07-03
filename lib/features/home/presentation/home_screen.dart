@@ -25,7 +25,7 @@ class HomeScreen extends StatelessWidget {
               child: AbsorbPointer(
                 child: TextField(
                   decoration: InputDecoration(
-                    hintText: l10n.countrySelectTitle,
+                    hintText: l10n.searchCountriesHint,
                     prefixIcon: const Icon(Icons.search),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(t.radiusXl),

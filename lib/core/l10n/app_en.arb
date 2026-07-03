@@ -29,7 +29,8 @@
   "fullNameLabel": "Full Name",
   "agreeTerms": "I agree to the Terms of Service and Privacy Policy.",
   "haveAccountPrompt": "Already have an account?",
-  "countrySelectTitle": "Search countries...",
+  "countrySelectTitle": "Select Country",
+  "searchCountriesHint": "Search countries...",
   "popularDestinations": "Popular Destinations",
   "planSelectSubtitle": "Select your data plan",
   "selectPlan": "Select Plan",
@@ -49,5 +50,15 @@
   "purchaseSuccessTitle": "Purchase Successful!",
   "activateEsim": "Activate eSIM Now",
   "goToMyPlans": "Go to My Plans",
-  "retryAction": "Retry"
+  "retryAction": "Retry",
+  "noPlanSelected": "No plan selected",
+  "browsePlans": "Browse Plans",
+  "planDataAmount": "{amount}GB Data",
+  "@planDataAmount": {"placeholders": {"amount": {"type": "String"}}},
+  "validForDays": "Valid for {days} Days",
+  "@validForDays": {"placeholders": {"days": {"type": "int"}}},
+  "featureHighSpeed": "High-Speed 5G/4G",
+  "featureInstantActivation": "Instant Activation",
+  "featureHotspot": "Hotspot Allowed",
+  "creditOrDebitCard": "Credit or Debit Card"
 }

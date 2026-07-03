@@ -22,7 +22,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
     final l10n = AppLocalizations.of(context)!;
     final methods = <String, (String, IconData)>{
       'apple_pay': ('Apple Pay', Icons.apple),
-      'card': ('Credit or Debit Card', Icons.credit_card),
+      'card': (l10n.creditOrDebitCard, Icons.credit_card),
       'paypal': ('PayPal', Icons.account_balance_wallet),
       'google_pay': ('Google Pay', Icons.g_mobiledata),
     };

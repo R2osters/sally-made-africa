@@ -15,7 +15,6 @@ class AppTheme {
       useMaterial3: true,
       colorScheme: scheme,
       scaffoldBackgroundColor: AppTokens.light.background,
-      fontFamily: 'Inter',
       extensions: const [AppTokens.light],
     );
   }
@@ -29,7 +28,6 @@ class AppTheme {
       useMaterial3: true,
       colorScheme: scheme,
       scaffoldBackgroundColor: AppTokens.dark.background,
-      fontFamily: 'Inter',
       extensions: const [AppTokens.dark],
     );
   }
