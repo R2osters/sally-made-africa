@@ -37,9 +37,21 @@ Livré :
 - i18n : `AppLocalizations` câblé partout (anglais seulement pour l'instant), clés dans `lib/core/l10n/app_en.arb`
 - Écrans placeholder + test de démarrage/changement d'onglet
 
+### Refonte UI / Design System : FAIT ✅ (2026-07-03, hors roadmap, inséré avant Auth)
+Spec : `docs/superpowers/specs/2026-07-03-ui-redesign-design.md`. Plan : `docs/superpowers/plans/2026-07-03-ui-redesign.md`. 13/13 tests passent.
+
+Livré :
+- Design system : seed orange `#FF6B35`, Plus Jakarta Sans (`google_fonts`), component themes complets, tokens `AppSpacing`/`AppRadius` (`lib/core/theme/`)
+- Widgets partagés : `AppButton`, `AppCard`, `AppTextField`, `EmptyState`, `ShimmerBox`, `PlanCard` (`lib/shared/widgets/`)
+- Bottom-nav pill flottante animée (`AppScaffold` refait, contrat routes inchangé)
+- 4 tabs habillés avec mock data (fichiers `*_mock.dart` dans `data/`, remplacés par Supabase plus tard) ; animations `flutter_animate` finies (pumpAndSettle-safe)
+- Écrans Auth UI-only : `/auth` (welcome), `/auth/login`, `/auth/signup` hors shell — submits factices `context.go('/home')`
+- Toggle dark mode branché sur `themeModeProvider` dans Profile
+- Gotcha : tests touchant `GoogleFonts` doivent être `testWidgets` (pas `test()`) — le fetch async de police échoue après la fin d'un plain test
+
 ## Prochaine étape : Sous-projet 2 — Auth
 
-Commencer ici. Lancer `superpowers:brainstorming` pour le spec Auth.
+Commencer ici. Lancer `superpowers:brainstorming` pour le spec Auth. Les écrans Auth UI existent déjà (`lib/features/auth/presentation/`) — le sous-projet branche la vraie logique Supabase derrière.
 
 Périmètre attendu (du cahier des charges initial) :
 - Connexion : Email, Numéro de téléphone, Google, Apple, **Invité** (guest)
