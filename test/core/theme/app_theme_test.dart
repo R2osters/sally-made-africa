@@ -3,7 +3,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:travelconnect/core/theme/app_theme.dart';
 
 void main() {
-  testWidgets('light and dark themes use the warm orange seed', (WidgetTester tester) async {
+  setUpAll(() {
+    TestWidgetsFlutterBinding.ensureInitialized();
+  });
+
+  test('light and dark themes use the warm orange seed', () {
     final light = AppTheme.light();
     final dark = AppTheme.dark();
     expect(light.useMaterial3, isTrue);
@@ -14,7 +18,7 @@ void main() {
     expect(hue, inInclusiveRange(10, 50));
   });
 
-  testWidgets('component themes are configured', (WidgetTester tester) async {
+  test('component themes are configured', () {
     final light = AppTheme.light();
     expect(light.inputDecorationTheme.filled, isTrue);
     expect(light.cardTheme.shape, isA<RoundedRectangleBorder>());
