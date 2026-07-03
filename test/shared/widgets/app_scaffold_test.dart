@@ -6,7 +6,9 @@ import 'package:go_router/go_router.dart';
 import 'package:travelconnect/shared/widgets/app_scaffold.dart';
 
 void main() {
-  testWidgets('AppScaffold shows 4 nav destinations', (tester) async {
+  testWidgets(
+      'AppScaffold shows 4 tappable nav labels and switches branches',
+      (tester) async {
     final router = GoRouter(
       initialLocation: '/a',
       routes: [
@@ -38,7 +40,18 @@ void main() {
     ));
     await tester.pumpAndSettle();
 
-    expect(find.byType(NavigationDestination), findsNWidgets(4));
+    // The Material NavigationBar was replaced by a floating animated pill
+    // bar (Task 8), so the visible contract is checked instead: all 4
+    // labels are present and tapping one switches the active branch.
+    expect(find.text('Home'), findsOneWidget);
+    expect(find.text('My Plans'), findsOneWidget);
+    expect(find.text('History'), findsOneWidget);
+    expect(find.text('Profile'), findsOneWidget);
     expect(find.text('A'), findsOneWidget);
+
+    await tester.tap(find.text('My Plans'));
+    await tester.pumpAndSettle();
+    expect(find.text('B'), findsOneWidget);
+    expect(find.text('A'), findsNothing);
   });
 }
