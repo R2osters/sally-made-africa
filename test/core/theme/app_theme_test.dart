@@ -1,13 +1,12 @@
+// test/core/theme/app_theme_test.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:travelconnect/core/theme/app_theme.dart';
 
 void main() {
-  setUpAll(() {
-    TestWidgetsFlutterBinding.ensureInitialized();
-  });
-
-  test('light and dark themes use the warm orange seed', () {
+  // testWidgets (not plain test): GoogleFonts fires an async font fetch whose
+  // failure would otherwise be reported after a plain test() completes.
+  testWidgets('light and dark themes use the warm orange seed', (tester) async {
     final light = AppTheme.light();
     final dark = AppTheme.dark();
     expect(light.useMaterial3, isTrue);
@@ -18,7 +17,7 @@ void main() {
     expect(hue, inInclusiveRange(10, 50));
   });
 
-  test('component themes are configured', () {
+  testWidgets('component themes are configured', (tester) async {
     final light = AppTheme.light();
     expect(light.inputDecorationTheme.filled, isTrue);
     expect(light.cardTheme.shape, isA<RoundedRectangleBorder>());
