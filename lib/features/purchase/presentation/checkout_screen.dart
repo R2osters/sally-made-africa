@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_colors.dart';
@@ -12,18 +13,31 @@ import '../../auth/presentation/auth_shell.dart' show BackChip;
 import '../../catalog/data/catalog_mock.dart';
 import '../../catalog/domain/catalog_models.dart';
 import '../../catalog/presentation/catalog_sheets.dart' show OperatorBadge;
+import '../../history/data/history_provider.dart';
+import '../../my_plans/data/purchased_plans_provider.dart';
 
-class CheckoutScreen extends StatefulWidget {
+class CheckoutScreen extends ConsumerStatefulWidget {
   final SelectedPlan plan;
 
   const CheckoutScreen({super.key, required this.plan});
 
   @override
-  State<CheckoutScreen> createState() => _CheckoutScreenState();
+  ConsumerState<CheckoutScreen> createState() => _CheckoutScreenState();
 }
 
-class _CheckoutScreenState extends State<CheckoutScreen> {
+class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
   String _selected = 'momo';
+
+  void _pay() {
+    final plan = widget.plan;
+    // Mock payment: register the plan and its transaction in-session.
+    ref.read(purchasedPlansProvider.notifier).addFromSelection(plan);
+    ref.read(historyProvider.notifier).addPurchase(
+          plan,
+          locale: Localizations.localeOf(context).languageCode,
+        );
+    context.pushReplacement('/success', extra: plan);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -147,8 +161,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             const SizedBox(height: AppSpacing.lg),
             AppButton(
               label: '${l10n.payNow} · ${plan.priceLabel}',
-              onPressed: () =>
-                  context.pushReplacement('/success', extra: plan),
+              onPressed: _pay,
             ),
             const SizedBox(height: AppSpacing.md),
             Row(

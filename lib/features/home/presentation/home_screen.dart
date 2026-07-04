@@ -14,7 +14,7 @@ import '../../../shared/widgets/globe_view.dart';
 import '../../catalog/data/catalog_mock.dart';
 import '../../catalog/domain/catalog_models.dart';
 import '../../catalog/presentation/catalog_sheets.dart';
-import '../../profile/data/profile_mock.dart';
+import '../../profile/data/user_profile_provider.dart';
 
 /// Explore — the globe is the hero and the primary navigation: tap a served
 /// country (globe label or popular card) to open its operators sheet.
@@ -30,6 +30,7 @@ class HomeScreen extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final c = AppColors.of(context);
     final locale = ref.watch(localeProvider);
+    final profile = ref.watch(userProfileProvider);
 
     return Scaffold(
       body: SafeArea(
@@ -54,7 +55,7 @@ class HomeScreen extends ConsumerWidget {
                               .bodySmall
                               ?.copyWith(color: c.faint)),
                       Text(
-                        '${ProfileMock.firstName} 👋',
+                        '${profile.firstName} 👋',
                         style: AppTheme.display(size: 30, color: c.text),
                       ),
                     ],
@@ -89,11 +90,13 @@ class HomeScreen extends ConsumerWidget {
                   ?.copyWith(color: c.dim),
             ),
             const SizedBox(height: AppSpacing.md),
-            // The globe keeps its dark casing in both themes (spec).
+            // Globe casing follows the app theme (user feedback 2026-07-04).
             Container(
               height: 340,
               decoration: BoxDecoration(
-                color: AppColors.dark.bg,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? AppColors.dark.bg
+                    : const Color(0xFFE3EDFA),
                 borderRadius: BorderRadius.circular(AppRadius.card),
                 border: Border.all(color: c.border),
               ),
@@ -113,7 +116,10 @@ class HomeScreen extends ConsumerWidget {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 12, vertical: 5),
                         decoration: BoxDecoration(
-                          color: const Color(0xB80C1220),
+                          color: Theme.of(context).brightness ==
+                                  Brightness.dark
+                              ? const Color(0xB80C1220)
+                              : const Color(0xB8FFFFFF),
                           borderRadius: BorderRadius.circular(AppRadius.pill),
                         ),
                         child: Text(
@@ -122,7 +128,7 @@ class HomeScreen extends ConsumerWidget {
                             fontFamily: AppTheme.textFamily,
                             fontSize: 11.5,
                             fontWeight: FontWeight.w600,
-                            color: AppColors.dark.dim,
+                            color: c.dim,
                           ),
                         ),
                       ),
@@ -137,13 +143,21 @@ class HomeScreen extends ConsumerWidget {
               children: [
                 Text(l10n.popular.toUpperCase(),
                     style: AppTheme.sectionLabel(context)),
-                Text(
-                  l10n.seeAll,
-                  style: const TextStyle(
-                    fontFamily: AppTheme.textFamily,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.accent,
+                GestureDetector(
+                  onTap: () => showAllDestinationsSheet(context),
+                  behavior: HitTestBehavior.opaque,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.xs, vertical: AppSpacing.xs),
+                    child: Text(
+                      l10n.seeAll,
+                      style: const TextStyle(
+                        fontFamily: AppTheme.textFamily,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.accent,
+                      ),
+                    ),
                   ),
                 ),
               ],

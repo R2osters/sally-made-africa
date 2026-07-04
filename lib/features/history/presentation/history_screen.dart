@@ -2,24 +2,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/flag_image.dart';
 import '../../../shared/widgets/status_chip.dart';
-import '../data/history_mock.dart';
+import '../data/history_provider.dart';
 import '../domain/transaction_record.dart';
 
 /// History — transactions grouped by month inside ONE glass container per
 /// month, 1 px internal separators (spec).
-class HistoryScreen extends StatelessWidget {
+class HistoryScreen extends ConsumerWidget {
   const HistoryScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final c = AppColors.of(context);
+    final groups = ref.watch(historyProvider);
 
     return Scaffold(
       body: SafeArea(
@@ -35,7 +37,7 @@ class HistoryScreen extends StatelessWidget {
             Text(l10n.history,
                 style: AppTheme.display(size: 30, color: c.text)),
             const SizedBox(height: AppSpacing.xl),
-            for (final group in HistoryMock.groups) ...[
+            for (final group in groups) ...[
               Text(group.monthLabel.toUpperCase(),
                   style: AppTheme.sectionLabel(context)),
               const SizedBox(height: AppSpacing.md),

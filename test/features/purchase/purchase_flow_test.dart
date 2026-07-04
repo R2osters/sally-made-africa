@@ -58,5 +58,13 @@ void main() {
     await tester.tap(find.text('Voir mes forfaits'));
     await tester.pumpAndSettle();
     expect(find.text('Mes forfaits'), findsWidgets);
+
+    // The purchase landed in My plans (a second Sénégal card on top).
+    expect(find.text('Sénégal'), findsNWidgets(2));
+
+    // …and in History (2 seeded 3 500 FCFA + the new one).
+    await tester.tap(find.text('Historique').last);
+    await tester.pumpAndSettle();
+    expect(find.text('3 500 FCFA'), findsNWidgets(3));
   });
 }
