@@ -8,6 +8,7 @@ abstract final class HistoryMock {
       items: [
         TransactionRecord(
           id: 'tx-1',
+          countryId: 'sn',
           countryName: 'Sénégal',
           flagEmoji: '🇸🇳',
           operatorName: 'Orange',
@@ -18,6 +19,7 @@ abstract final class HistoryMock {
         ),
         TransactionRecord(
           id: 'tx-2',
+          countryId: 'gh',
           countryName: 'Ghana',
           flagEmoji: '🇬🇭',
           operatorName: 'MTN',
@@ -33,6 +35,7 @@ abstract final class HistoryMock {
       items: [
         TransactionRecord(
           id: 'tx-3',
+          countryId: 'ci',
           countryName: "Côte d'Ivoire",
           flagEmoji: '🇨🇮',
           operatorName: 'Orange',
@@ -43,6 +46,7 @@ abstract final class HistoryMock {
         ),
         TransactionRecord(
           id: 'tx-4',
+          countryId: 'ng',
           countryName: 'Nigeria',
           flagEmoji: '🇳🇬',
           operatorName: 'MTN',
@@ -53,6 +57,7 @@ abstract final class HistoryMock {
         ),
         TransactionRecord(
           id: 'tx-5',
+          countryId: 'bj',
           countryName: 'Bénin',
           flagEmoji: '🇧🇯',
           operatorName: 'Celtiis',

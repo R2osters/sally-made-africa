@@ -7,6 +7,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
+import '../../../shared/widgets/flag_image.dart';
 import '../../auth/presentation/auth_shell.dart' show BackChip;
 import '../../catalog/domain/catalog_models.dart';
 import '../../catalog/presentation/catalog_sheets.dart' show OperatorBadge;
@@ -49,12 +50,21 @@ class PlanDetailScreen extends StatelessWidget {
                       Text(plan.operator.name,
                           style: Theme.of(context).textTheme.titleLarge),
                       const SizedBox(height: 2),
-                      Text(
-                        '${plan.country.flagEmoji} ${plan.country.name}',
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall
-                            ?.copyWith(color: c.dim),
+                      Row(
+                        children: [
+                          FlagImage(
+                              countryId: plan.country.id,
+                              flagEmoji: plan.country.flagEmoji,
+                              width: 18),
+                          const SizedBox(width: 6),
+                          Text(
+                            plan.country.name,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(color: c.dim),
+                          ),
+                        ],
                       ),
                     ],
                   ),

@@ -1,6 +1,7 @@
 enum PlanStatus { active, expired, pending }
 
 class PurchasedPlan {
+  final String countryId;
   final String countryName;
   final String flagEmoji;
   final String operatorName;
@@ -12,6 +13,7 @@ class PurchasedPlan {
   final PlanStatus status;
 
   const PurchasedPlan({
+    required this.countryId,
     required this.countryName,
     required this.flagEmoji,
     required this.operatorName,

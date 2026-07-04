@@ -4,6 +4,7 @@ import '../domain/purchased_plan.dart';
 abstract final class MyPlansMock {
   static const plans = <PurchasedPlan>[
     PurchasedPlan(
+      countryId: 'sn',
       countryName: 'Sénégal',
       flagEmoji: '🇸🇳',
       operatorName: 'Orange',
@@ -15,6 +16,7 @@ abstract final class MyPlansMock {
       status: PlanStatus.active,
     ),
     PurchasedPlan(
+      countryId: 'gh',
       countryName: 'Ghana',
       flagEmoji: '🇬🇭',
       operatorName: 'MTN',
@@ -26,6 +28,7 @@ abstract final class MyPlansMock {
       status: PlanStatus.active,
     ),
     PurchasedPlan(
+      countryId: 'ci',
       countryName: "Côte d'Ivoire",
       flagEmoji: '🇨🇮',
       operatorName: 'Orange',

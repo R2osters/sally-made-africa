@@ -9,6 +9,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
+import '../../../shared/widgets/glass.dart' show Levitate;
 import '../../../shared/widgets/globe_view.dart';
 import '../../catalog/data/catalog_mock.dart';
 
@@ -39,9 +40,12 @@ class WelcomeScreen extends ConsumerWidget {
                 ),
               ),
               const Expanded(
-                child: GlobeView(
-                  countries: CatalogMock.countries,
-                  showLabels: false,
+                // Spec: globe levitates on a 6 s loop on the welcome screen.
+                child: Levitate(
+                  child: GlobeView(
+                    countries: CatalogMock.countries,
+                    showLabels: false,
+                  ),
                 ),
               ),
               Align(

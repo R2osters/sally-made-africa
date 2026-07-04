@@ -1,12 +1,11 @@
 // lib/shared/widgets/app_scaffold.dart
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
+import 'glass.dart' show liquidBlur;
 
 class AppScaffold extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
@@ -35,7 +34,7 @@ class AppScaffold extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppRadius.sheet),
           child: BackdropFilter(
             // Spec: nav bar = blur(26) saturate(150%) on rgba(12,18,32,.72).
-            filter: ImageFilter.blur(sigmaX: 26, sigmaY: 26),
+            filter: liquidBlur(26, 1.5),
             child: Container(
               height: 68,
               decoration: BoxDecoration(
