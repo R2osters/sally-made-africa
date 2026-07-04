@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_theme.dart';
 import '../../features/catalog/domain/catalog_models.dart';
+import 'flag_image.dart';
+import 'world_geometry.dart';
 
 /// The hero globe — stylised CustomPaint replacement for the prototype's
 /// Three.js scene (deviation logged in the redesign spec): dark sphere,
@@ -38,6 +40,7 @@ class _GlobeViewState extends State<GlobeView>
   // Face West Africa on load, like the prototype.
   double _dragY = -1.5;
   double _tiltX = 0.42;
+  List<WorldPolygon>? _world;
 
   @override
   void initState() {
@@ -48,6 +51,12 @@ class _GlobeViewState extends State<GlobeView>
     );
     // A repeating controller would hang pumpAndSettle — static in tests.
     if (!_isTestEnv) _spin.repeat();
+    _world = WorldGeometry.maybeLoaded;
+    if (_world == null) {
+      WorldGeometry.load().then((polys) {
+        if (mounted) setState(() => _world = polys);
+      });
+    }
   }
 
   @override
@@ -82,6 +91,7 @@ class _GlobeViewState extends State<GlobeView>
                       rotY: _rotY,
                       tiltX: _tiltX,
                       markers: projections,
+                      world: _world,
                     ),
                   ),
                   if (widget.showLabels)
@@ -171,11 +181,13 @@ class _GlobePainter extends CustomPainter {
   final double rotY;
   final double tiltX;
   final List<_MarkerProjection> markers;
+  final List<WorldPolygon>? world;
 
   const _GlobePainter({
     required this.rotY,
     required this.tiltX,
     required this.markers,
+    this.world,
   });
 
   @override
@@ -194,7 +206,7 @@ class _GlobePainter extends CustomPainter {
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 26),
     );
 
-    // Sphere body.
+    // Ocean sphere (prototype's canvas gradient).
     canvas.drawCircle(
       center,
       radius,
@@ -203,13 +215,16 @@ class _GlobePainter extends CustomPainter {
           center: Alignment(-0.35, -0.4),
           radius: 1.15,
           colors: [
-            Color(0xFF223A5E),
-            Color(0xFF14243E),
-            Color(0xFF0A1626),
+            Color(0xFF12294A),
+            Color(0xFF0A1F38),
+            Color(0xFF08182E),
           ],
           stops: [0, 0.55, 1],
         ).createShader(Rect.fromCircle(center: center, radius: radius)),
     );
+
+    _paintGraticule(canvas, center, radius);
+    if (world != null) _paintLand(canvas, center, radius);
 
     // Rim light.
     canvas.drawCircle(
@@ -220,8 +235,6 @@ class _GlobePainter extends CustomPainter {
         ..strokeWidth = 1.4
         ..color = const Color(0xFF3C78C8).withOpacity(0.5),
     );
-
-    _paintGraticule(canvas, center, radius);
 
     // Served-country markers (labels are widgets above the canvas).
     for (final m in markers) {
@@ -236,6 +249,85 @@ class _GlobePainter extends CustomPainter {
       );
       canvas.drawCircle(m.offset, 3.4, dot);
     }
+  }
+
+  /// Country outlines projected orthographically. Points on the far side
+  /// are clamped to the horizon so rings stay closed (mild edge distortion,
+  /// invisible at this size). Served countries get the prototype's vivid
+  /// blue→cyan fill with a glow pass.
+  void _paintLand(Canvas canvas, Offset center, double radius) {
+    final landFill = Paint()..color = const Color(0xFF17293F);
+    final landStroke = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1
+      ..color = const Color(0xFF82A5CD).withOpacity(0.55);
+    final servedFill = Paint()
+      ..shader = const LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [Color(0xFF2F86FF), Color(0xFF37E0FF)],
+      ).createShader(Rect.fromCircle(center: center, radius: radius));
+    final servedGlow = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 6
+      ..color = const Color(0xFF3CE0FF).withOpacity(0.55)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
+    final servedStroke = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.6
+      ..color = const Color(0xFFCDF6FF);
+
+    final clip = Path()
+      ..addOval(Rect.fromCircle(center: center, radius: radius));
+    canvas.save();
+    canvas.clipPath(clip);
+
+    for (final servedPass in [false, true]) {
+      for (final poly in world!) {
+        if (poly.served != servedPass) continue;
+        final path = _polyPath(poly, center, radius);
+        if (path == null) continue;
+        if (poly.served) {
+          canvas.drawPath(path, servedGlow);
+          canvas.drawPath(path, servedFill);
+          canvas.drawPath(path, servedStroke);
+        } else {
+          canvas.drawPath(path, landFill);
+          canvas.drawPath(path, landStroke);
+        }
+      }
+    }
+    canvas.restore();
+  }
+
+  Path? _polyPath(WorldPolygon poly, Offset center, double radius) {
+    Path? path;
+    for (final ring in poly.rings) {
+      var anyVisible = false;
+      final points = <Offset>[];
+      for (final pt in ring) {
+        final v = _sphericalToRotated(pt[1], pt[0], rotY, tiltX);
+        double x = v.x, y = v.y;
+        if (v.z > 0) {
+          anyVisible = true;
+        } else {
+          // Clamp far-side points onto the horizon circle.
+          final len = math.sqrt(x * x + y * y);
+          if (len == 0) continue;
+          x /= len;
+          y /= len;
+        }
+        points.add(center + Offset(x * radius, -y * radius));
+      }
+      if (!anyVisible || points.length < 3) continue;
+      path ??= Path();
+      path.moveTo(points.first.dx, points.first.dy);
+      for (final p in points.skip(1)) {
+        path.lineTo(p.dx, p.dy);
+      }
+      path.close();
+    }
+    return path;
   }
 
   void _paintStars(Canvas canvas, Size size) {
@@ -290,7 +382,7 @@ class _GlobePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_GlobePainter old) =>
-      old.rotY != rotY || old.tiltX != tiltX;
+      old.rotY != rotY || old.tiltX != tiltX || old.world != world;
 }
 
 class _CountryLabel extends StatelessWidget {
@@ -322,7 +414,10 @@ class _CountryLabel extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(country.flagEmoji, style: const TextStyle(fontSize: 12)),
+            FlagImage(
+                countryId: country.id,
+                flagEmoji: country.flagEmoji,
+                width: 19),
             const SizedBox(width: 6),
             Text(
               country.name,

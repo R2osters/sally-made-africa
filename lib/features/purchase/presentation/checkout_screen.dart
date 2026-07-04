@@ -7,6 +7,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
+import '../../../shared/widgets/flag_image.dart';
 import '../../auth/presentation/auth_shell.dart' show BackChip;
 import '../../catalog/data/catalog_mock.dart';
 import '../../catalog/domain/catalog_models.dart';
@@ -68,13 +69,36 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                         const SizedBox(height: 2),
-                        Text(
-                          '${plan.operator.name} · ${plan.country.flagEmoji} '
-                          '${plan.country.name}',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall
-                              ?.copyWith(color: c.dim),
+                        Row(
+                          children: [
+                            Flexible(
+                              child: Text(
+                                '${plan.operator.name} · ',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(color: c.dim),
+                              ),
+                            ),
+                            FlagImage(
+                                countryId: plan.country.id,
+                                flagEmoji: plan.country.flagEmoji,
+                                width: 16),
+                            const SizedBox(width: 5),
+                            Flexible(
+                              child: Text(
+                                plan.country.name,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(color: c.dim),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),

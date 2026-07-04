@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/flag_image.dart';
 import '../../../shared/widgets/status_chip.dart';
 import '../data/my_plans_mock.dart';
 import '../domain/purchased_plan.dart';
@@ -85,7 +86,10 @@ class _PlanCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                Text(plan.flagEmoji, style: const TextStyle(fontSize: 28)),
+                FlagImage(
+                    countryId: plan.countryId,
+                    flagEmoji: plan.flagEmoji,
+                    width: 36),
                 const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Column(

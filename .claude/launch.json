@@ -4,8 +4,9 @@
     {
       "name": "travelconnect-web",
       "runtimeExecutable": "flutter",
-      "runtimeArgs": ["run", "-d", "web-server", "--web-port", "5555"],
-      "port": 5555
+      "runtimeArgs": ["run", "-d", "web-server", "--web-port", "8484"],
+      "port": 8484,
+      "autoPort": false
     }
   ]
 }

@@ -7,6 +7,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
+import '../../../shared/widgets/flag_image.dart';
 import '../../../shared/widgets/status_chip.dart';
 import '../../catalog/domain/catalog_models.dart';
 import '../../catalog/presentation/catalog_sheets.dart' show OperatorBadge;
@@ -84,12 +85,25 @@ class SuccessScreen extends StatelessWidget {
                             style: Theme.of(context).textTheme.titleMedium,
                           ),
                           const SizedBox(height: 2),
-                          Text(
-                            '${plan.country.flagEmoji} ${plan.country.name}',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall
-                                ?.copyWith(color: c.dim),
+                          Row(
+                            children: [
+                              FlagImage(
+                                  countryId: plan.country.id,
+                                  flagEmoji: plan.country.flagEmoji,
+                                  width: 16),
+                              const SizedBox(width: 5),
+                              Flexible(
+                                child: Text(
+                                  plan.country.name,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall
+                                      ?.copyWith(color: c.dim),
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),

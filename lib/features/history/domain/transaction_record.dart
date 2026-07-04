@@ -2,6 +2,7 @@ enum TxStatus { completed, pending, failed }
 
 class TransactionRecord {
   final String id;
+  final String countryId;
   final String countryName;
   final String flagEmoji;
   final String operatorName;
@@ -12,6 +13,7 @@ class TransactionRecord {
 
   const TransactionRecord({
     required this.id,
+    required this.countryId,
     required this.countryName,
     required this.flagEmoji,
     required this.operatorName,

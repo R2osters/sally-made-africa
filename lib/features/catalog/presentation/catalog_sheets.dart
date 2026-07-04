@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/flag_image.dart';
+import '../../../shared/widgets/glass.dart' show liquidBlur;
 import '../data/catalog_mock.dart';
 import '../domain/catalog_models.dart';
 
@@ -43,29 +45,44 @@ class _SheetChrome extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Container(
-      decoration: BoxDecoration(
-        color: isDark ? const Color(0xF20B1322) : c.bg2,
-        borderRadius:
-            const BorderRadius.vertical(top: Radius.circular(AppRadius.sheet)),
-        border: Border(top: BorderSide(color: c.border2)),
-      ),
-      child: SafeArea(
-        top: false,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              margin: const EdgeInsets.only(top: AppSpacing.md),
-              width: 44,
-              height: 5,
-              decoration: BoxDecoration(
-                color: c.border2,
-                borderRadius: BorderRadius.circular(AppRadius.pill),
-              ),
+    return ClipRRect(
+      borderRadius:
+          const BorderRadius.vertical(top: Radius.circular(AppRadius.sheet)),
+      child: BackdropFilter(
+        // Spec: floating sheets = blur(40) saturate(200%).
+        filter: liquidBlur(40, 2.0),
+        child: Container(
+          decoration: BoxDecoration(
+            // Specular top highlight over the translucent body.
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: const Alignment(0, -0.55),
+              colors: isDark
+                  ? [const Color(0xD90B1322), const Color(0xEB16233C)]
+                  : [c.bg2.withOpacity(0.88), c.bg2],
             ),
-            Flexible(child: child),
-          ],
+            borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(AppRadius.sheet)),
+            border: Border(top: BorderSide(color: c.border2)),
+          ),
+          child: SafeArea(
+            top: false,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  margin: const EdgeInsets.only(top: AppSpacing.md),
+                  width: 44,
+                  height: 5,
+                  decoration: BoxDecoration(
+                    color: c.border2,
+                    borderRadius: BorderRadius.circular(AppRadius.pill),
+                  ),
+                ),
+                Flexible(child: child),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -89,7 +106,10 @@ class _OperatorsSheet extends StatelessWidget {
       children: [
         Row(
           children: [
-            Text(country.flagEmoji, style: const TextStyle(fontSize: 34)),
+            FlagImage(
+                countryId: country.id,
+                flagEmoji: country.flagEmoji,
+                width: 48),
             const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Column(
@@ -257,12 +277,21 @@ class _PlansSheet extends StatelessWidget {
                   Text(operator.name,
                       style: AppTheme.display(size: 22, color: c.text)),
                   const SizedBox(height: 2),
-                  Text(
-                    '${country.flagEmoji} ${country.name}',
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodySmall
-                        ?.copyWith(color: c.dim),
+                  Row(
+                    children: [
+                      FlagImage(
+                          countryId: country.id,
+                          flagEmoji: country.flagEmoji,
+                          width: 18),
+                      const SizedBox(width: 6),
+                      Text(
+                        country.name,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodySmall
+                            ?.copyWith(color: c.dim),
+                      ),
+                    ],
                   ),
                 ],
               ),

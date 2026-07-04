@@ -6,6 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/flag_image.dart';
 import '../../../shared/widgets/status_chip.dart';
 import '../data/history_mock.dart';
 import '../domain/transaction_record.dart';
@@ -87,7 +88,10 @@ class _TransactionRow extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Row(
         children: [
-          Text(record.flagEmoji, style: const TextStyle(fontSize: 24)),
+          FlagImage(
+              countryId: record.countryId,
+              flagEmoji: record.flagEmoji,
+              width: 32),
           const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(

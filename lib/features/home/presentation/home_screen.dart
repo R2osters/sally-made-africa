@@ -8,6 +8,7 @@ import '../../../core/l10n/locale_provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/flag_image.dart';
 import '../../../shared/widgets/glass.dart';
 import '../../../shared/widgets/globe_view.dart';
 import '../../catalog/data/catalog_mock.dart';
@@ -154,7 +155,7 @@ class HomeScreen extends ConsumerWidget {
               physics: const NeverScrollableScrollPhysics(),
               mainAxisSpacing: AppSpacing.md,
               crossAxisSpacing: AppSpacing.md,
-              childAspectRatio: 1.35,
+              childAspectRatio: 1.12,
               children: [
                 for (final country in CatalogMock.countries.take(6))
                   _CountryCard(
@@ -215,7 +216,8 @@ class _CountryCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(country.flagEmoji, style: const TextStyle(fontSize: 26)),
+          FlagImage(
+              countryId: country.id, flagEmoji: country.flagEmoji, width: 38),
           const SizedBox(height: AppSpacing.sm),
           Text(
             country.name,
@@ -227,10 +229,12 @@ class _CountryCard extends StatelessWidget {
           Text(
             '${l10n.opCount(country.operatorIds.length)} · '
             '${l10n.fromPrice(CatalogMock.fromPriceLabel(country))}',
-            maxLines: 1,
+            maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style:
-                Theme.of(context).textTheme.bodySmall?.copyWith(color: c.dim),
+            style: Theme.of(context)
+                .textTheme
+                .bodySmall
+                ?.copyWith(color: c.dim, fontSize: 12),
           ),
         ],
       ),

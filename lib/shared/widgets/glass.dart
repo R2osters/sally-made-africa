@@ -1,9 +1,75 @@
+import 'dart:io' show Platform;
+import 'dart:math' as math;
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
+
+/// Liquid-glass backdrop: blur + saturation boost (spec: nav blur(26)
+/// saturate(150%), sheets blur(40) saturate(200%)).
+ImageFilter liquidBlur(double sigma, double saturation) {
+  final s = saturation;
+  const lr = 0.2126, lg = 0.7152, lb = 0.0722;
+  return ImageFilter.compose(
+    outer: ColorFilter.matrix([
+      lr + (1 - lr) * s, lg * (1 - s), lb * (1 - s), 0, 0,
+      lr * (1 - s), lg + (1 - lg) * s, lb * (1 - s), 0, 0,
+      lr * (1 - s), lg * (1 - s), lb + (1 - lb) * s, 0, 0,
+      0, 0, 0, 1, 0,
+    ]),
+    inner: ImageFilter.blur(sigmaX: sigma, sigmaY: sigma),
+  );
+}
+
+/// Slow vertical levitation (spec: 6 s float), used on the welcome globe.
+/// Static under FLUTTER_TEST so pumpAndSettle terminates.
+class Levitate extends StatefulWidget {
+  final Widget child;
+  final double amplitude;
+
+  const Levitate({super.key, required this.child, this.amplitude = 9});
+
+  @override
+  State<Levitate> createState() => _LevitateState();
+}
+
+class _LevitateState extends State<Levitate>
+    with SingleTickerProviderStateMixin {
+  static final bool _isTestEnv =
+      !kIsWeb && Platform.environment.containsKey('FLUTTER_TEST');
+
+  late final AnimationController _c;
+
+  @override
+  void initState() {
+    super.initState();
+    _c = AnimationController(
+        vsync: this, duration: const Duration(seconds: 6));
+    if (!_isTestEnv) _c.repeat();
+  }
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _c,
+      builder: (context, child) => Transform.translate(
+        offset:
+            Offset(0, -widget.amplitude * math.sin(_c.value * 2 * math.pi)),
+        child: child,
+      ),
+      child: widget.child,
+    );
+  }
+}
 
 /// Frosted-glass surface: translucent fill, hairline border, backdrop blur.
 /// Blur is opt-out (`frosted: false`) for cheap surfaces stacked in lists —
