@@ -8,23 +8,27 @@ void main() {
     SharedPreferences.setMockInitialValues({});
   });
 
-  testWidgets('Profile sign-in leads to welcome, login and signup',
+  testWidgets('sign out leads to welcome, then login and signup (fr)',
       (tester) async {
     await tester.pumpWidget(const ProviderScope(child: TravelConnectApp()));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Profile').last);
+    await tester.tap(find.text('Profil').last);
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Sign in'));
+    await tester.scrollUntilVisible(find.text('Se déconnecter'), 200);
+    await tester.tap(find.text('Se déconnecter'));
     await tester.pumpAndSettle();
-    expect(find.text('Continue with Email'), findsOneWidget);
 
-    await tester.tap(find.text('Continue with Email'));
-    await tester.pumpAndSettle();
-    expect(find.text('Welcome back'), findsOneWidget);
+    // Welcome screen.
+    expect(find.text('Créer un compte'), findsOneWidget);
 
-    await tester.tap(find.text('No account? Sign up'));
+    await tester.tap(find.text("J'ai déjà un compte"));
     await tester.pumpAndSettle();
-    expect(find.text('Create your account'), findsOneWidget);
+    expect(find.text('Bon retour'), findsOneWidget);
+
+    await tester.tap(find.text("S'inscrire"));
+    await tester.pumpAndSettle();
+    expect(
+        find.text('Rejoignez TravelConnect en 30 secondes.'), findsOneWidget);
   });
 }

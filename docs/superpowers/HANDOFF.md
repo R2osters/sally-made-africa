@@ -1,7 +1,20 @@
 # TravelConnect — Handoff pour le prochain agent
 
 > Document lu au démarrage d'une session pour savoir où en est le projet et quoi faire ensuite.
-> Dernière mise à jour : 2026-07-01 (fin du sous-projet Foundation).
+> Dernière mise à jour : 2026-07-04 (redesign v2 « liquid glass » complet, 11 écrans).
+
+## ⚡ Redesign v2 « Liquid Glass » : FAIT ✅ (2026-07-04)
+
+Source : dossier `TravelConnect Redesign/` (prototype HTML + specs). Spec : `docs/superpowers/specs/2026-07-04-liquid-glass-redesign-design.md`. Plan : `docs/superpowers/plans/2026-07-04-liquid-glass-redesign.md`. Audit 360 : `docs/superpowers/AUDIT-360-2026-07-04.md`. 15/15 tests.
+
+Remplace le design v1 orange/Plus Jakarta Sans. Livré :
+- **Design system** : fond spatial `#05070F`, surfaces verre translucides, accent `#2F80FF`/cyan `#37E0FF`, `AppColors` (ThemeExtension, dark+light), polices **locales** Clash Display + Satoshi (`assets/fonts/`, google_fonts retiré — le gotcha testWidgets/GoogleFonts n'existe plus)
+- **11 écrans** : welcome (globe étoilé), login, signup, **OTP** (`/auth/otp`), Explorer (globe interactif CustomPaint `GlobeView` — rotation/drag/labels pays tappables), sheets opérateurs→forfaits, `/plan-detail`, `/checkout` (5 moyens de paiement), `/success`, Mes forfaits, `/active-plan` (anneau conique + QR factice), Historique (groupes mois), Profil (toggles langue/sombre/notifs/biométrie), `/notifications`
+- **i18n FR+EN** complets, FR par défaut, `localeProvider` persisté avec garde `_touched` (même garde ajoutée à `themeModeProvider` — dette #2 soldée)
+- **Mocks** : catalog 8 pays / 11 opérateurs / 4 tiers / devises XOF-GHS-NGN (`lib/features/catalog/`), paiements, plans, historique, notifs — tout depuis le prototype
+- Gotcha : `GlobeView` détecte `FLUTTER_TEST` et désactive sa rotation infinie (pumpAndSettle-safe). Drapeaux = emoji (déviation spec, pas de réseau).
+
+Reste v1 → v2 : rien de bloquant. Dette : `anonKey` déprécié (info), cast test (info).
 
 ## Ce qu'est le projet
 

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_spacing.dart';
+import '../../core/theme/app_theme.dart';
 
-/// Themed text input: label above the field, inline error, optional icon.
+/// Liquid-glass input: uppercase section-style label above, h56, radius 16,
+/// optional leading icon, focus = accent border (from theme).
 class AppTextField extends StatelessWidget {
   final String label;
+  final String? hint;
   final TextEditingController? controller;
   final String? errorText;
   final IconData? prefixIcon;
@@ -15,6 +18,7 @@ class AppTextField extends StatelessWidget {
   const AppTextField({
     super.key,
     required this.label,
+    this.hint,
     this.controller,
     this.errorText,
     this.prefixIcon,
@@ -25,12 +29,10 @@ class AppTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label,
-            style: textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600)),
+        Text(label.toUpperCase(), style: AppTheme.sectionLabel(context)),
         const SizedBox(height: AppSpacing.sm),
         TextField(
           controller: controller,
@@ -38,8 +40,9 @@ class AppTextField extends StatelessWidget {
           keyboardType: keyboardType,
           onChanged: onChanged,
           decoration: InputDecoration(
+            hintText: hint,
             errorText: errorText,
-            prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
+            prefixIcon: prefixIcon != null ? Icon(prefixIcon, size: 20) : null,
           ),
         ),
       ],
