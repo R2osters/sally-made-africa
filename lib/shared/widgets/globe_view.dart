@@ -40,6 +40,9 @@ class _GlobeViewState extends State<GlobeView>
   // Face West Africa on load, like the prototype.
   double _dragY = -1.5;
   double _tiltX = 0.42;
+  // Pinch zoom (prototype: cam 1.65–4.6 ≈ radius factor range below).
+  double _zoom = 1.0;
+  double _zoomStart = 1.0;
   List<WorldPolygon>? _world;
 
   @override
@@ -69,11 +72,20 @@ class _GlobeViewState extends State<GlobeView>
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
-      onPanUpdate: (d) => setState(() {
-        _dragY += d.delta.dx * 0.006;
-        _tiltX = (_tiltX + d.delta.dy * 0.005).clamp(-0.9, 0.9);
+      // Scale gestures subsume pan: 1 finger drags (rotate), 2 pinch (zoom).
+      onScaleStart: (_) => _zoomStart = _zoom,
+      onScaleUpdate: (d) => setState(() {
+        _dragY += d.focalPointDelta.dx * 0.006 / _zoom;
+        _tiltX =
+            (_tiltX + d.focalPointDelta.dy * 0.005 / _zoom).clamp(-0.9, 0.9);
+        if (d.scale != 1.0) {
+          _zoom = (_zoomStart * d.scale).clamp(0.7, 2.2);
+        }
       }),
+      onDoubleTap: () =>
+          setState(() => _zoom = _zoom > 1.2 ? 1.0 : 1.7),
       child: AnimatedBuilder(
         animation: _spin,
         builder: (context, _) {
@@ -90,8 +102,10 @@ class _GlobeViewState extends State<GlobeView>
                     painter: _GlobePainter(
                       rotY: _rotY,
                       tiltX: _tiltX,
+                      zoom: _zoom,
                       markers: projections,
                       world: _world,
+                      dark: isDark,
                     ),
                   ),
                   if (widget.showLabels)
@@ -123,7 +137,7 @@ class _GlobeViewState extends State<GlobeView>
   }
 
   List<_MarkerProjection> _project(Size size) {
-    final radius = math.min(size.width, size.height) * 0.42;
+    final radius = math.min(size.width, size.height) * 0.42 * _zoom;
     final center = Offset(size.width / 2, size.height / 2);
     return widget.countries.map((c) {
       final v = _sphericalToRotated(c.lat, c.lon, _rotY, _tiltX);
@@ -177,23 +191,71 @@ _Vec3 _sphericalToRotated(double lat, double lon, double rotY, double tiltX) {
   return _Vec3(x, y1, z2);
 }
 
+/// Theme-aware globe palette — dark keeps the prototype's space look,
+/// light is a soft day variant so the globe follows the app theme.
+class _GlobeTheme {
+  final List<Color> ocean;
+  final Color land;
+  final Color landStroke;
+  final Color atmosphere;
+  final Color star;
+  final Color rim;
+  final Color graticule;
+
+  const _GlobeTheme({
+    required this.ocean,
+    required this.land,
+    required this.landStroke,
+    required this.atmosphere,
+    required this.star,
+    required this.rim,
+    required this.graticule,
+  });
+
+  static const dark = _GlobeTheme(
+    ocean: [Color(0xFF12294A), Color(0xFF0A1F38), Color(0xFF08182E)],
+    land: Color(0xFF17293F),
+    landStroke: Color(0x8C82A5CD),
+    atmosphere: Color(0xFF2F9BFF),
+    star: Color(0xFFBCD4FF),
+    rim: Color(0x803C78C8),
+    graticule: Color(0x242F6BFF),
+  );
+
+  static const light = _GlobeTheme(
+    ocean: [Color(0xFFDCEAFB), Color(0xFFC6DCF6), Color(0xFFB3CFF0)],
+    land: Color(0xFFF4F8FE),
+    landStroke: Color(0x734A6B96),
+    atmosphere: Color(0xFF7FB4FF),
+    star: Color(0x33456A9E),
+    rim: Color(0x66688FC4),
+    graticule: Color(0x1F2F6BFF),
+  );
+}
+
 class _GlobePainter extends CustomPainter {
   final double rotY;
   final double tiltX;
+  final double zoom;
   final List<_MarkerProjection> markers;
   final List<WorldPolygon>? world;
+  final bool dark;
 
   const _GlobePainter({
     required this.rotY,
     required this.tiltX,
+    required this.zoom,
     required this.markers,
     this.world,
+    this.dark = true,
   });
+
+  _GlobeTheme get _t => dark ? _GlobeTheme.dark : _GlobeTheme.light;
 
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
-    final radius = math.min(size.width, size.height) * 0.42;
+    final radius = math.min(size.width, size.height) * 0.42 * zoom;
 
     _paintStars(canvas, size);
 
@@ -202,7 +264,7 @@ class _GlobePainter extends CustomPainter {
       center,
       radius * 1.16,
       Paint()
-        ..color = const Color(0xFF2F9BFF).withOpacity(0.35)
+        ..color = _t.atmosphere.withOpacity(dark ? 0.35 : 0.45)
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 26),
     );
 
@@ -211,15 +273,11 @@ class _GlobePainter extends CustomPainter {
       center,
       radius,
       Paint()
-        ..shader = const RadialGradient(
-          center: Alignment(-0.35, -0.4),
+        ..shader = RadialGradient(
+          center: const Alignment(-0.35, -0.4),
           radius: 1.15,
-          colors: [
-            Color(0xFF12294A),
-            Color(0xFF0A1F38),
-            Color(0xFF08182E),
-          ],
-          stops: [0, 0.55, 1],
+          colors: _t.ocean,
+          stops: const [0, 0.55, 1],
         ).createShader(Rect.fromCircle(center: center, radius: radius)),
     );
 
@@ -233,7 +291,7 @@ class _GlobePainter extends CustomPainter {
       Paint()
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1.4
-        ..color = const Color(0xFF3C78C8).withOpacity(0.5),
+        ..color = _t.rim,
     );
 
     // Served-country markers (labels are widgets above the canvas).
@@ -256,11 +314,11 @@ class _GlobePainter extends CustomPainter {
   /// invisible at this size). Served countries get the prototype's vivid
   /// blue→cyan fill with a glow pass.
   void _paintLand(Canvas canvas, Offset center, double radius) {
-    final landFill = Paint()..color = const Color(0xFF17293F);
+    final landFill = Paint()..color = _t.land;
     final landStroke = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1
-      ..color = const Color(0xFF82A5CD).withOpacity(0.55);
+      ..color = _t.landStroke;
     final servedFill = Paint()
       ..shader = const LinearGradient(
         begin: Alignment.topLeft,
@@ -331,15 +389,17 @@ class _GlobePainter extends CustomPainter {
   }
 
   void _paintStars(Canvas canvas, Size size) {
-    // Deterministic starfield.
+    // Deterministic starfield (subtle specks in light mode).
     final rnd = math.Random(97);
     final paint = Paint();
+    final baseOpacity = dark ? 0.25 : 0.06;
+    final varOpacity = dark ? 0.5 : 0.10;
     for (var i = 0; i < 90; i++) {
       final dx = rnd.nextDouble() * size.width;
       final dy = rnd.nextDouble() * size.height;
       final r = rnd.nextDouble() * 1.1 + 0.3;
-      paint.color =
-          const Color(0xFFBCD4FF).withOpacity(0.25 + rnd.nextDouble() * 0.5);
+      paint.color = _t.star
+          .withOpacity(baseOpacity + rnd.nextDouble() * varOpacity);
       canvas.drawCircle(Offset(dx, dy), r, paint);
     }
   }
@@ -348,7 +408,7 @@ class _GlobePainter extends CustomPainter {
     final paint = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1
-      ..color = const Color(0xFF2F6BFF).withOpacity(0.14);
+      ..color = _t.graticule;
 
     Offset? prev;
     void polyline(double lat, double lon, bool reset) {
@@ -382,7 +442,11 @@ class _GlobePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_GlobePainter old) =>
-      old.rotY != rotY || old.tiltX != tiltX || old.world != world;
+      old.rotY != rotY ||
+      old.tiltX != tiltX ||
+      old.zoom != zoom ||
+      old.world != world ||
+      old.dark != dark;
 }
 
 class _CountryLabel extends StatelessWidget {
@@ -393,18 +457,20 @@ class _CountryLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 5),
         decoration: BoxDecoration(
-          color: const Color(0xE6080E1A),
+          color: dark ? const Color(0xE6080E1A) : const Color(0xF0FFFFFF),
           borderRadius: BorderRadius.circular(999),
-          border:
-              Border.all(color: AppColors.accent.withOpacity(0.45)),
+          border: Border.all(
+              color: (dark ? AppColors.accent : AppColors.primary)
+                  .withOpacity(0.45)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.7),
+              color: Colors.black.withOpacity(dark ? 0.7 : 0.25),
               blurRadius: 18,
               spreadRadius: -6,
               offset: const Offset(0, 6),
@@ -421,11 +487,13 @@ class _CountryLabel extends StatelessWidget {
             const SizedBox(width: 6),
             Text(
               country.name,
-              style: const TextStyle(
+              style: TextStyle(
                 fontFamily: AppTheme.textFamily,
                 fontWeight: FontWeight.w700,
                 fontSize: 12,
-                color: Color(0xFFEAF0FB),
+                color: dark
+                    ? const Color(0xFFEAF0FB)
+                    : const Color(0xFF0B1220),
               ),
             ),
           ],

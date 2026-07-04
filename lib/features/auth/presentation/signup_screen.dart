@@ -1,22 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_spacing.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_text_field.dart';
+import '../../profile/data/user_profile_provider.dart';
 import 'auth_shell.dart';
 import 'login_screen.dart';
 
-class SignupScreen extends StatefulWidget {
+class SignupScreen extends ConsumerStatefulWidget {
   const SignupScreen({super.key});
 
   @override
-  State<SignupScreen> createState() => _SignupScreenState();
+  ConsumerState<SignupScreen> createState() => _SignupScreenState();
 }
 
-class _SignupScreenState extends State<SignupScreen> {
+class _SignupScreenState extends ConsumerState<SignupScreen> {
   final _name = TextEditingController();
   final _email = TextEditingController();
   final _password = TextEditingController();
@@ -42,7 +44,11 @@ class _SignupScreenState extends State<SignupScreen> {
     });
     if (_nameError != null || _emailError != null) return;
     setState(() => _loading = true);
-    // UI-only: fake a short round-trip, then verify by OTP.
+    // UI-only auth, but the profile is real: greeting and Profile use it.
+    await ref.read(userProfileProvider.notifier).setProfile(
+          name: _name.text.trim(),
+          email: _email.text.trim(),
+        );
     await Future<void>.delayed(const Duration(milliseconds: 350));
     if (mounted) context.go('/auth/otp');
   }

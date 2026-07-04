@@ -10,6 +10,19 @@ import '../../../shared/widgets/glass.dart' show liquidBlur;
 import '../data/catalog_mock.dart';
 import '../domain/catalog_models.dart';
 
+/// "See all" — every served destination, tap → operators sheet.
+void showAllDestinationsSheet(BuildContext context) {
+  showModalBottomSheet<void>(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    barrierColor: Colors.black.withOpacity(0.55),
+    builder: (sheetContext) => const _SheetChrome(
+      child: _AllDestinationsSheet(),
+    ),
+  );
+}
+
 /// Country → operators sheet → plans sheet → /plan-detail.
 void showOperatorsSheet(BuildContext context, Country country) {
   showModalBottomSheet<void>(
@@ -85,6 +98,72 @@ class _SheetChrome extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _AllDestinationsSheet extends StatelessWidget {
+  const _AllDestinationsSheet();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final c = AppColors.of(context);
+
+    return ListView(
+      shrinkWrap: true,
+      padding: const EdgeInsets.fromLTRB(
+          AppSpacing.gutter, AppSpacing.lg, AppSpacing.gutter, AppSpacing.xl),
+      children: [
+        Text(l10n.popular.toUpperCase(),
+            style: AppTheme.sectionLabel(context)),
+        const SizedBox(height: AppSpacing.md),
+        for (final country in CatalogMock.countries) ...[
+          GestureDetector(
+            onTap: () {
+              Navigator.of(context).pop();
+              showOperatorsSheet(context, country);
+            },
+            child: Container(
+              padding: const EdgeInsets.all(AppSpacing.lg),
+              decoration: BoxDecoration(
+                color: c.surface,
+                borderRadius: BorderRadius.circular(AppRadius.card),
+                border: Border.all(color: c.border),
+              ),
+              child: Row(
+                children: [
+                  FlagImage(
+                      countryId: country.id,
+                      flagEmoji: country.flagEmoji,
+                      width: 40),
+                  const SizedBox(width: AppSpacing.md),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(country.name,
+                            style: Theme.of(context).textTheme.titleMedium),
+                        const SizedBox(height: 2),
+                        Text(
+                          '${l10n.opCount(country.operatorIds.length)} · '
+                          '${l10n.fromPrice(CatalogMock.fromPriceLabel(country))}',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(color: c.dim),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Icon(Icons.chevron_right_rounded, color: c.faint),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.md),
+        ],
+      ],
     );
   }
 }

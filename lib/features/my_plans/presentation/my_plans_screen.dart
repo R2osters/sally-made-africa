@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_colors.dart';
@@ -9,16 +10,17 @@ import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/flag_image.dart';
 import '../../../shared/widgets/status_chip.dart';
-import '../data/my_plans_mock.dart';
+import '../data/purchased_plans_provider.dart';
 import '../domain/purchased_plan.dart';
 
-class MyPlansScreen extends StatelessWidget {
+class MyPlansScreen extends ConsumerWidget {
   const MyPlansScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final c = AppColors.of(context);
+    final plans = ref.watch(purchasedPlansProvider);
 
     return Scaffold(
       body: SafeArea(
@@ -34,7 +36,7 @@ class MyPlansScreen extends StatelessWidget {
             Text(l10n.myPlans,
                 style: AppTheme.display(size: 30, color: c.text)),
             const SizedBox(height: AppSpacing.xl),
-            for (final plan in MyPlansMock.plans) ...[
+            for (final plan in plans) ...[
               _PlanCard(
                 plan: plan,
                 onTap: plan.status == PlanStatus.active
