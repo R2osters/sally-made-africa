@@ -1,106 +1,167 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/l10n/locale_provider.dart';
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
+import '../../../shared/widgets/glass.dart' show Levitate;
+import '../../../shared/widgets/globe_view.dart';
+import '../../catalog/data/catalog_mock.dart';
 
-class WelcomeScreen extends StatelessWidget {
+/// Welcome — starlit globe hero, badge, display-XL title, three actions.
+/// Auth is still UI-only: every path leads to /home.
+class WelcomeScreen extends ConsumerWidget {
   const WelcomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final scheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
+    final locale = ref.watch(localeProvider);
 
     return Scaffold(
+      // The globe keeps its dark casing in both themes (spec).
+      backgroundColor: AppColors.dark.bg,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.xl),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.gutter),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Spacer(),
-              Container(
-                width: 88,
-                height: 88,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: scheme.primary,
-                  borderRadius: BorderRadius.circular(AppRadius.lg + 4),
+              Align(
+                alignment: Alignment.topRight,
+                child: _LangPill(
+                  label: locale.languageCode.toUpperCase(),
+                  onTap: () => ref.read(localeProvider.notifier).toggle(),
                 ),
-                child: Icon(Icons.travel_explore_rounded,
-                    size: 44, color: scheme.onPrimary),
-              )
-                  .animate()
-                  .scale(
-                      begin: const Offset(0.8, 0.8),
-                      duration: 400.ms,
-                      curve: Curves.easeOutBack)
-                  .fadeIn(duration: 300.ms),
-              const SizedBox(height: AppSpacing.xl),
-              Text(l10n.appTitle,
-                  style: textTheme.headlineMedium
-                      ?.copyWith(fontWeight: FontWeight.w800))
-                  .animate(delay: 100.ms)
-                  .fadeIn(duration: 300.ms),
-              const SizedBox(height: AppSpacing.sm),
-              Text(l10n.authTagline,
-                  style: textTheme.bodyMedium
-                      ?.copyWith(color: scheme.onSurfaceVariant),
-                  textAlign: TextAlign.center)
-                  .animate(delay: 180.ms)
-                  .fadeIn(duration: 300.ms),
-              const Spacer(),
-              for (final (i, item) in <({String label, IconData icon, VoidCallback onTap, AppButtonVariant variant})>[
-                (
-                  label: l10n.authContinueEmail,
-                  icon: Icons.mail_outline_rounded,
-                  onTap: () => context.go('/auth/login'),
-                  variant: AppButtonVariant.primary
+              ),
+              const Expanded(
+                // Spec: globe levitates on a 6 s loop on the welcome screen.
+                child: Levitate(
+                  child: GlobeView(
+                    countries: CatalogMock.countries,
+                    showLabels: false,
+                  ),
                 ),
-                (
-                  label: l10n.authContinuePhone,
-                  icon: Icons.phone_iphone_rounded,
-                  onTap: () => context.go('/auth/signup'),
-                  variant: AppButtonVariant.secondary
+              ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withOpacity(0.12),
+                    borderRadius: BorderRadius.circular(AppRadius.pill),
+                    border:
+                        Border.all(color: AppColors.primary.withOpacity(0.35)),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 7,
+                        height: 7,
+                        decoration: const BoxDecoration(
+                          color: AppColors.accent,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      const SizedBox(width: AppSpacing.sm),
+                      Text(
+                        l10n.welcomeBadge,
+                        style: const TextStyle(
+                          fontFamily: AppTheme.textFamily,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.96,
+                          color: AppColors.accent,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                (
-                  label: l10n.authContinueGoogle,
-                  icon: Icons.g_mobiledata_rounded,
-                  onTap: () => context.go('/home'),
-                  variant: AppButtonVariant.secondary
+              ),
+              const SizedBox(height: AppSpacing.lg),
+              Text(
+                l10n.welcomeTitle,
+                style: AppTheme.display(
+                    size: 38, height: 1.02, color: AppColors.dark.text),
+              ),
+              const SizedBox(height: AppSpacing.md),
+              Text(
+                l10n.welcomeSub,
+                style: TextStyle(
+                  fontFamily: AppTheme.textFamily,
+                  fontSize: 15,
+                  height: 1.5,
+                  color: AppColors.dark.dim,
                 ),
-                (
-                  label: l10n.authContinueApple,
-                  icon: Icons.apple_rounded,
-                  onTap: () => context.go('/home'),
-                  variant: AppButtonVariant.secondary
-                ),
-              ].indexed)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: AppButton(
-                      label: item.label,
-                      icon: Icon(item.icon, size: 20),
-                      variant: item.variant,
-                      onPressed: item.onTap,
-                    ),
-                  )
-                      .animate(delay: (250 + 70 * i).ms)
-                      .fadeIn(duration: 300.ms)
-                      .moveY(begin: 16, curve: Curves.easeOutCubic),
-                ),
+              ),
+              const SizedBox(height: AppSpacing.xxl),
               AppButton(
-                label: l10n.authContinueGuest,
+                label: l10n.createAccount,
+                onPressed: () => context.go('/auth/signup'),
+              ),
+              const SizedBox(height: AppSpacing.md),
+              AppButton(
+                label: l10n.haveAccount,
+                variant: AppButtonVariant.secondary,
+                onPressed: () => context.go('/auth/login'),
+              ),
+              const SizedBox(height: AppSpacing.xs),
+              AppButton(
+                label: '${l10n.continueGuest} →',
                 variant: AppButtonVariant.ghost,
                 onPressed: () => context.go('/home'),
-              ).animate(delay: 550.ms).fadeIn(duration: 300.ms),
-            ],
+              ),
+              const SizedBox(height: AppSpacing.md),
+            ]
+                .animate(interval: 60.ms)
+                .fadeIn(duration: 500.ms, curve: const Cubic(.2, .8, .2, 1))
+                .moveY(begin: 8, end: 0, duration: 500.ms),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _LangPill extends StatelessWidget {
+  final String label;
+  final VoidCallback onTap;
+
+  const _LangPill({required this.label, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        decoration: BoxDecoration(
+          color: AppColors.dark.surface2,
+          borderRadius: BorderRadius.circular(AppRadius.pill),
+          border: Border.all(color: AppColors.dark.border),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.language_rounded, size: 15, color: AppColors.dark.dim),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: TextStyle(
+                fontFamily: AppTheme.textFamily,
+                fontSize: 13,
+                fontWeight: FontWeight.w700,
+                color: AppColors.dark.text,
+              ),
+            ),
+          ],
         ),
       ),
     );

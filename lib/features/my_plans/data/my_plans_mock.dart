@@ -1,35 +1,51 @@
-// Hard-coded showcase data. Replaced by Supabase in the Purchase sub-project.
-import '../../home/domain/data_plan.dart';
 import '../domain/purchased_plan.dart';
 
-const PurchasedPlan mockActivePlan = PurchasedPlan(
-  plan: DataPlan(
-    id: 'gh-mtn-5',
-    countryName: 'Ghana',
-    flagEmoji: '🇬🇭',
-    operatorName: 'MTN',
-    gigabytes: 5,
-    validityDays: 7,
-    priceLabel: '3 500 FCFA',
-  ),
-  usedGigabytes: 2.1,
-  daysLeft: 4,
-  active: true,
-);
-
-const mockPastPlans = <PurchasedPlan>[
-  PurchasedPlan(
-    plan: DataPlan(
-      id: 'sn-orange-8',
+/// Showcase data from the design prototype.
+abstract final class MyPlansMock {
+  static const plans = <PurchasedPlan>[
+    PurchasedPlan(
+      countryId: 'sn',
       countryName: 'Sénégal',
       flagEmoji: '🇸🇳',
       operatorName: 'Orange',
-      gigabytes: 8,
-      validityDays: 14,
-      priceLabel: '5 000 FCFA',
+      operatorColorHex: 'FF7900',
+      dataLabel: '6 Go',
+      usedPct: 38,
+      leftLabel: '3,7 Go',
+      daysLeft: 5,
+      status: PlanStatus.active,
     ),
-    usedGigabytes: 8,
-    daysLeft: 0,
-    active: false,
-  ),
-];
+    PurchasedPlan(
+      countryId: 'gh',
+      countryName: 'Ghana',
+      flagEmoji: '🇬🇭',
+      operatorName: 'MTN',
+      operatorColorHex: 'FFCC00',
+      dataLabel: '15 Go',
+      usedPct: 72,
+      leftLabel: '4,2 Go',
+      daysLeft: 18,
+      status: PlanStatus.active,
+    ),
+    PurchasedPlan(
+      countryId: 'ci',
+      countryName: "Côte d'Ivoire",
+      flagEmoji: '🇨🇮',
+      operatorName: 'Orange',
+      operatorColorHex: 'FF7900',
+      dataLabel: '6 Go',
+      usedPct: 100,
+      leftLabel: '0 Go',
+      daysLeft: 0,
+      status: PlanStatus.expired,
+    ),
+  ];
+
+  /// Active-plan detail screen (ring + QR) showcase values.
+  static const activeUsedLabel = '3,7 Go';
+  static const activeTotalLabel = '6 Go';
+  static const activeRingPct = 62;
+  static const activeCountry = 'Sénégal';
+  static const activeOperator = 'Orange';
+  static const activeDaysLeft = 5;
+}

@@ -6,6 +6,8 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_text_field.dart';
+import 'auth_shell.dart';
+import 'login_screen.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -17,11 +19,9 @@ class SignupScreen extends StatefulWidget {
 class _SignupScreenState extends State<SignupScreen> {
   final _name = TextEditingController();
   final _email = TextEditingController();
-  final _phone = TextEditingController();
   final _password = TextEditingController();
   String? _nameError;
   String? _emailError;
-  String? _passwordError;
   bool _loading = false;
 
   static final _emailRe = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
@@ -30,31 +30,21 @@ class _SignupScreenState extends State<SignupScreen> {
   void dispose() {
     _name.dispose();
     _email.dispose();
-    _phone.dispose();
     _password.dispose();
     super.dispose();
   }
 
-  void _validateLive() {
+  Future<void> _submit() async {
     final l10n = AppLocalizations.of(context)!;
     setState(() {
-      _nameError = _name.text.trim().isEmpty ? l10n.authFieldRequired : null;
-      _emailError =
-          _emailRe.hasMatch(_email.text) ? null : l10n.authEmailInvalid;
-      _passwordError =
-          _password.text.length >= 8 ? null : l10n.authPasswordTooShort;
+      _nameError = _name.text.trim().isEmpty ? l10n.fieldRequired : null;
+      _emailError = _emailRe.hasMatch(_email.text) ? null : l10n.emailInvalid;
     });
-  }
-
-  Future<void> _submit() async {
-    _validateLive();
-    if (_nameError != null || _emailError != null || _passwordError != null) {
-      return;
-    }
+    if (_nameError != null || _emailError != null) return;
     setState(() => _loading = true);
-    await Future<void>.delayed(const Duration(milliseconds: 400));
-    if (!mounted) return;
-    context.go('/home');
+    // UI-only: fake a short round-trip, then verify by OTP.
+    await Future<void>.delayed(const Duration(milliseconds: 350));
+    if (mounted) context.go('/auth/otp');
   }
 
   @override
@@ -62,66 +52,51 @@ class _SignupScreenState extends State<SignupScreen> {
     final l10n = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
 
-    return Scaffold(
-      appBar: AppBar(),
-      body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.all(AppSpacing.xl),
-          children: [
-            Text(l10n.authSignupTitle,
-                style: textTheme.headlineMedium
-                    ?.copyWith(fontWeight: FontWeight.w800))
-                .animate()
-                .fadeIn(duration: 300.ms)
-                .moveY(begin: 12),
-            const SizedBox(height: AppSpacing.xl),
-            AppTextField(
-              label: l10n.authNameLabel,
-              controller: _name,
-              errorText: _nameError,
-              prefixIcon: Icons.person_outline_rounded,
-              onChanged: (_) => _validateLive(),
-            ).animate(delay: 60.ms).fadeIn(duration: 300.ms).moveY(begin: 12),
-            const SizedBox(height: AppSpacing.lg),
-            AppTextField(
-              label: l10n.authEmailLabel,
-              controller: _email,
-              errorText: _emailError,
-              prefixIcon: Icons.mail_outline_rounded,
-              keyboardType: TextInputType.emailAddress,
-              onChanged: (_) => _validateLive(),
-            ).animate(delay: 120.ms).fadeIn(duration: 300.ms).moveY(begin: 12),
-            const SizedBox(height: AppSpacing.lg),
-            AppTextField(
-              label: l10n.authPhoneLabel,
-              controller: _phone,
-              prefixIcon: Icons.phone_iphone_rounded,
-              keyboardType: TextInputType.phone,
-            ).animate(delay: 180.ms).fadeIn(duration: 300.ms).moveY(begin: 12),
-            const SizedBox(height: AppSpacing.lg),
-            AppTextField(
-              label: l10n.authPasswordLabel,
-              controller: _password,
-              errorText: _passwordError,
-              prefixIcon: Icons.lock_outline_rounded,
-              obscureText: true,
-              onChanged: (_) => _validateLive(),
-            ).animate(delay: 240.ms).fadeIn(duration: 300.ms).moveY(begin: 12),
-            const SizedBox(height: AppSpacing.xl),
-            AppButton(
-              label: l10n.authSignupButton,
-              loading: _loading,
-              onPressed: _submit,
-            ).animate(delay: 300.ms).fadeIn(duration: 300.ms),
-            const SizedBox(height: AppSpacing.md),
-            AppButton(
-              label: l10n.authHaveAccount,
-              variant: AppButtonVariant.ghost,
-              onPressed: () => context.go('/auth/login'),
-            ),
-          ],
+    return AuthShell(
+      title: l10n.signupTitle,
+      subtitle: l10n.signupSub,
+      children: [
+        AppTextField(
+          label: l10n.fullName,
+          controller: _name,
+          errorText: _nameError,
+          prefixIcon: Icons.person_outline_rounded,
         ),
-      ),
+        const SizedBox(height: AppSpacing.lg),
+        AppTextField(
+          label: l10n.email,
+          hint: 'vous@exemple.com',
+          controller: _email,
+          errorText: _emailError,
+          prefixIcon: Icons.mail_outline_rounded,
+          keyboardType: TextInputType.emailAddress,
+        ),
+        const SizedBox(height: AppSpacing.lg),
+        AppTextField(
+          label: l10n.password,
+          controller: _password,
+          prefixIcon: Icons.lock_outline_rounded,
+          obscureText: true,
+        ),
+        const SizedBox(height: AppSpacing.xl),
+        AppButton(
+            label: l10n.createAccount, loading: _loading, onPressed: _submit),
+        const SizedBox(height: AppSpacing.lg),
+        Text(
+          l10n.termsNotice,
+          textAlign: TextAlign.center,
+          style: textTheme.bodySmall,
+        ),
+        const SizedBox(height: AppSpacing.xl),
+        AuthFooterLink(
+          question: l10n.haveAccountQ,
+          action: l10n.signIn,
+          onTap: () => context.go('/auth/login'),
+        ),
+      ]
+          .animate(interval: 60.ms)
+          .fadeIn(duration: 500.ms, curve: const Cubic(.2, .8, .2, 1))
+          .moveY(begin: 8, end: 0, duration: 500.ms),
     );
   }
 }

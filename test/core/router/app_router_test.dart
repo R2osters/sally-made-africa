@@ -4,6 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:travelconnect/core/router/app_router.dart';
+import 'package:travelconnect/core/theme/app_theme.dart';
 
 void main() {
   testWidgets('router starts at /home', (tester) async {
@@ -20,6 +21,8 @@ void main() {
         container: container,
         child: MaterialApp.router(
           routerConfig: router,
+          // AppScaffold reads the AppColors theme extension.
+          theme: AppTheme.dark(),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
         ),

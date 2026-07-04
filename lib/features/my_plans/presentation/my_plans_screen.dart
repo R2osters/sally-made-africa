@@ -2,9 +2,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
-import '../../../shared/widgets/app_card.dart';
+import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/flag_image.dart';
+import '../../../shared/widgets/status_chip.dart';
 import '../data/my_plans_mock.dart';
 import '../domain/purchased_plan.dart';
 
@@ -14,131 +18,133 @@ class MyPlansScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final textTheme = Theme.of(context).textTheme;
+    final c = AppColors.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.myPlansTab)),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(
-            AppSpacing.lg, AppSpacing.sm, AppSpacing.lg, 120),
-        children: [
-          Text(l10n.myPlansActive,
-              style: textTheme.titleMedium
-                  ?.copyWith(fontWeight: FontWeight.w700)),
-          const SizedBox(height: AppSpacing.md),
-          const _ActivePlanCard(plan: mockActivePlan)
-              .animate()
-              .fadeIn(duration: 300.ms)
-              .moveY(begin: 16, curve: Curves.easeOutCubic),
-          const SizedBox(height: AppSpacing.xl),
-          Text(l10n.myPlansPast,
-              style: textTheme.titleMedium
-                  ?.copyWith(fontWeight: FontWeight.w700)),
-          const SizedBox(height: AppSpacing.md),
-          for (var i = 0; i < mockPastPlans.length; i++)
-            Padding(
-              padding: const EdgeInsets.only(bottom: AppSpacing.md),
-              child: _PastPlanTile(plan: mockPastPlans[i])
-                  .animate(delay: (100 + 80 * i).ms)
-                  .fadeIn(duration: 300.ms)
-                  .moveY(begin: 16),
-            ),
-        ],
+      body: SafeArea(
+        bottom: false,
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.gutter,
+            AppSpacing.md,
+            AppSpacing.gutter,
+            AppSpacing.navClearance,
+          ),
+          children: [
+            Text(l10n.myPlans,
+                style: AppTheme.display(size: 30, color: c.text)),
+            const SizedBox(height: AppSpacing.xl),
+            for (final plan in MyPlansMock.plans) ...[
+              _PlanCard(
+                plan: plan,
+                onTap: plan.status == PlanStatus.active
+                    ? () => context.push('/active-plan')
+                    : null,
+              ),
+              const SizedBox(height: AppSpacing.md),
+            ],
+          ]
+              .animate(interval: 60.ms)
+              .fadeIn(duration: 500.ms, curve: const Cubic(.2, .8, .2, 1))
+              .moveY(begin: 8, end: 0, duration: 500.ms),
+        ),
       ),
     );
   }
 }
 
-class _ActivePlanCard extends StatelessWidget {
+class _PlanCard extends StatelessWidget {
   final PurchasedPlan plan;
+  final VoidCallback? onTap;
 
-  const _ActivePlanCard({required this.plan});
+  const _PlanCard({required this.plan, this.onTap});
+
+  (String, Color) _statusMeta(AppLocalizations l10n) => switch (plan.status) {
+        PlanStatus.active => (l10n.active, AppColors.success),
+        PlanStatus.expired => (l10n.expired, const Color(0xFFFF7A86)),
+        PlanStatus.pending => (l10n.pending, AppColors.warn),
+      };
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final scheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-    final ratio =
-        (plan.usedGigabytes / plan.plan.gigabytes).clamp(0.0, 1.0);
+    final c = AppColors.of(context);
+    final (statusLabel, statusColor) = _statusMeta(l10n);
+    final expired = plan.status == PlanStatus.expired;
 
-    return AppCard(
-      padding: const EdgeInsets.all(AppSpacing.xl),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Text(plan.plan.flagEmoji, style: const TextStyle(fontSize: 28)),
-              const SizedBox(width: AppSpacing.md),
-              Expanded(
-                child: Text(
-                  '${plan.plan.countryName} · ${plan.plan.operatorName}',
-                  style: textTheme.titleMedium
-                      ?.copyWith(fontWeight: FontWeight.w800),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        decoration: BoxDecoration(
+          color: c.surface,
+          borderRadius: BorderRadius.circular(AppRadius.card),
+          border: Border.all(color: c.border),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                FlagImage(
+                    countryId: plan.countryId,
+                    flagEmoji: plan.flagEmoji,
+                    width: 36),
+                const SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(plan.countryName,
+                          style: Theme.of(context).textTheme.titleMedium),
+                      const SizedBox(height: 1),
+                      Text(
+                        '${plan.operatorName} · ${plan.dataLabel}',
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodySmall
+                            ?.copyWith(color: c.dim),
+                      ),
+                    ],
+                  ),
+                ),
+                StatusChip(label: statusLabel, color: statusColor),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(AppRadius.pill),
+              child: LinearProgressIndicator(
+                value: plan.usedPct / 100,
+                minHeight: 6,
+                backgroundColor: c.surface2,
+                valueColor: AlwaysStoppedAnimation(
+                  expired ? c.faint : AppColors.accent,
                 ),
               ),
-              Chip(
-                label: Text(l10n.myPlansDaysLeft(plan.daysLeft)),
-                backgroundColor: scheme.primaryContainer,
-                labelStyle: textTheme.labelMedium
-                    ?.copyWith(color: scheme.onPrimaryContainer),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.xl),
-          TweenAnimationBuilder<double>(
-            tween: Tween(begin: 0, end: ratio),
-            duration: const Duration(milliseconds: 400),
-            curve: Curves.easeOutCubic,
-            builder: (context, value, _) => ClipRRect(
-              borderRadius: BorderRadius.circular(AppRadius.sm),
-              child: LinearProgressIndicator(
-                value: value,
-                minHeight: 10,
-                backgroundColor: scheme.surfaceContainerHigh,
-              ),
             ),
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          Text(
-            l10n.myPlansRemaining(
-                plan.usedGigabytes.toStringAsFixed(1), plan.plan.gigabytes),
-            style: textTheme.bodySmall
-                ?.copyWith(color: scheme.onSurfaceVariant),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _PastPlanTile extends StatelessWidget {
-  final PurchasedPlan plan;
-
-  const _PastPlanTile({required this.plan});
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-    return AppCard(
-      child: Row(
-        children: [
-          Text(plan.plan.flagEmoji, style: const TextStyle(fontSize: 24)),
-          const SizedBox(width: AppSpacing.md),
-          Expanded(
-            child: Text(
-              '${plan.plan.countryName} · ${plan.plan.operatorName} · '
-              '${plan.plan.gigabytes} GB',
-              style:
-                  textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+            const SizedBox(height: AppSpacing.sm),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  l10n.dataLeft(plan.leftLabel),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall
+                      ?.copyWith(color: c.dim),
+                ),
+                Text(
+                  expired ? l10n.expired : l10n.daysLeft(plan.daysLeft),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall
+                      ?.copyWith(color: expired ? c.faint : c.dim),
+                ),
+              ],
             ),
-          ),
-          Text(plan.plan.priceLabel,
-              style: textTheme.bodySmall
-                  ?.copyWith(color: scheme.onSurfaceVariant)),
-        ],
+          ],
+        ),
       ),
     );
   }

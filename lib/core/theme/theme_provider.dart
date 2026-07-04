@@ -6,6 +6,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 const _prefsKey = 'theme_mode';
 
 class ThemeModeNotifier extends Notifier<ThemeMode> {
+  // A user choice made before the persisted read lands must win.
+  bool _touched = false;
+
   @override
   ThemeMode build() {
     _loadPersisted();
@@ -15,7 +18,7 @@ class ThemeModeNotifier extends Notifier<ThemeMode> {
   Future<void> _loadPersisted() async {
     final prefs = await SharedPreferences.getInstance();
     final stored = prefs.getString(_prefsKey);
-    if (stored != null) {
+    if (stored != null && !_touched) {
       state = ThemeMode.values.firstWhere(
         (m) => m.name == stored,
         orElse: () => ThemeMode.system,
@@ -24,6 +27,7 @@ class ThemeModeNotifier extends Notifier<ThemeMode> {
   }
 
   Future<void> setThemeMode(ThemeMode mode) async {
+    _touched = true;
     state = mode;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_prefsKey, mode.name);

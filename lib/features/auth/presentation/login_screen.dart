@@ -4,8 +4,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_text_field.dart';
+import 'auth_shell.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -32,72 +34,96 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _submit() async {
     final l10n = AppLocalizations.of(context)!;
     setState(() {
-      _emailError =
-          _emailRe.hasMatch(_email.text) ? null : l10n.authEmailInvalid;
+      _emailError = _emailRe.hasMatch(_email.text) ? null : l10n.emailInvalid;
     });
     if (_emailError != null) return;
     setState(() => _loading = true);
-    // UI-only: fake a short round-trip, then land on Home.
-    await Future<void>.delayed(const Duration(milliseconds: 400));
-    if (!mounted) return;
-    context.go('/home');
+    // UI-only: fake a short round-trip, then verify by OTP.
+    await Future<void>.delayed(const Duration(milliseconds: 350));
+    if (mounted) context.go('/auth/otp');
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final textTheme = Theme.of(context).textTheme;
 
-    return Scaffold(
-      appBar: AppBar(),
-      body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.all(AppSpacing.xl),
-          children: [
-            Text(l10n.authLoginTitle,
-                style: textTheme.headlineMedium
-                    ?.copyWith(fontWeight: FontWeight.w800))
-                .animate()
-                .fadeIn(duration: 300.ms)
-                .moveY(begin: 12),
-            const SizedBox(height: AppSpacing.xl),
-            AppTextField(
-              label: l10n.authEmailLabel,
-              controller: _email,
-              errorText: _emailError,
-              prefixIcon: Icons.mail_outline_rounded,
-              keyboardType: TextInputType.emailAddress,
-            ).animate(delay: 80.ms).fadeIn(duration: 300.ms).moveY(begin: 12),
-            const SizedBox(height: AppSpacing.lg),
-            AppTextField(
-              label: l10n.authPasswordLabel,
-              controller: _password,
-              prefixIcon: Icons.lock_outline_rounded,
-              obscureText: true,
-            ).animate(delay: 160.ms).fadeIn(duration: 300.ms).moveY(begin: 12),
-            const SizedBox(height: AppSpacing.sm),
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                onPressed: () {},
-                child: Text(l10n.authForgotPassword),
-              ),
-            ),
-            const SizedBox(height: AppSpacing.lg),
-            AppButton(
-              label: l10n.authLoginButton,
-              loading: _loading,
-              onPressed: _submit,
-            ).animate(delay: 240.ms).fadeIn(duration: 300.ms),
-            const SizedBox(height: AppSpacing.md),
-            AppButton(
-              label: l10n.authNoAccount,
-              variant: AppButtonVariant.ghost,
-              onPressed: () => context.go('/auth/signup'),
-            ),
-          ],
+    return AuthShell(
+      title: l10n.loginTitle,
+      subtitle: l10n.loginSub,
+      children: [
+        AppTextField(
+          label: l10n.email,
+          hint: 'vous@exemple.com',
+          controller: _email,
+          errorText: _emailError,
+          prefixIcon: Icons.mail_outline_rounded,
+          keyboardType: TextInputType.emailAddress,
         ),
-      ),
+        const SizedBox(height: AppSpacing.lg),
+        AppTextField(
+          label: l10n.password,
+          controller: _password,
+          prefixIcon: Icons.lock_outline_rounded,
+          obscureText: true,
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        Align(
+          alignment: Alignment.centerRight,
+          child: TextButton(
+            onPressed: () {},
+            child: Text(l10n.forgot),
+          ),
+        ),
+        const SizedBox(height: AppSpacing.lg),
+        AppButton(label: l10n.signIn, loading: _loading, onPressed: _submit),
+        const SizedBox(height: AppSpacing.xl),
+        AuthFooterLink(
+          question: l10n.noAccount,
+          action: l10n.signupLink,
+          onTap: () => context.go('/auth/signup'),
+        ),
+      ]
+          .animate(interval: 60.ms)
+          .fadeIn(duration: 500.ms, curve: const Cubic(.2, .8, .2, 1))
+          .moveY(begin: 8, end: 0, duration: 500.ms),
+    );
+  }
+}
+
+/// "Question  Action" footer used by login/signup.
+class AuthFooterLink extends StatelessWidget {
+  final String question;
+  final String action;
+  final VoidCallback onTap;
+
+  const AuthFooterLink({
+    super.key,
+    required this.question,
+    required this.action,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(question, style: textTheme.bodySmall),
+        const SizedBox(width: 6),
+        GestureDetector(
+          onTap: onTap,
+          child: Text(
+            action,
+            style: const TextStyle(
+              fontFamily: AppTheme.textFamily,
+              fontSize: 13,
+              fontWeight: FontWeight.w700,
+              color: Color(0xFF37E0FF),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
