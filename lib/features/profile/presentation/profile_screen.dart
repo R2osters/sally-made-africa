@@ -10,6 +10,7 @@ import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_provider.dart';
 import '../data/profile_mock.dart';
+import '../data/user_profile_provider.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -29,6 +30,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final c = AppColors.of(context);
     final themeMode = ref.watch(themeModeProvider);
     final locale = ref.watch(localeProvider);
+    final profile = ref.watch(userProfileProvider);
     final isDark = switch (themeMode) {
       ThemeMode.dark => true,
       ThemeMode.light => false,
@@ -60,9 +62,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     gradient: AppColors.primaryGradient,
                     shape: BoxShape.circle,
                   ),
-                  child: const Text(
-                    ProfileMock.initials,
-                    style: TextStyle(
+                  child: Text(
+                    profile.initials,
+                    style: const TextStyle(
                       fontFamily: AppTheme.textFamily,
                       fontSize: 22,
                       fontWeight: FontWeight.w900,
@@ -75,10 +77,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(ProfileMock.name,
+                      Text(profile.name,
                           style: Theme.of(context).textTheme.titleLarge),
                       const SizedBox(height: 2),
-                      Text(ProfileMock.email,
+                      Text(profile.email,
                           style: Theme.of(context)
                               .textTheme
                               .bodySmall
@@ -101,7 +103,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             _Group(
               label: l10n.account,
               children: [
-                _InfoRow(label: l10n.email, value: ProfileMock.email),
+                _InfoRow(label: l10n.email, value: profile.email),
                 _InfoRow(label: l10n.phoneLbl, value: ProfileMock.phone),
               ],
             ),
