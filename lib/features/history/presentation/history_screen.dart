@@ -3,110 +3,118 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
-import '../../../shared/widgets/app_card.dart';
+import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/status_chip.dart';
 import '../data/history_mock.dart';
 import '../domain/transaction_record.dart';
 
+/// History — transactions grouped by month inside ONE glass container per
+/// month, 1 px internal separators (spec).
 class HistoryScreen extends StatelessWidget {
   const HistoryScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final textTheme = Theme.of(context).textTheme;
+    final c = AppColors.of(context);
 
-    // Group transactions by month, preserving mock order.
-    final groups = <String, List<TransactionRecord>>{};
-    for (final tx in mockTransactions) {
-      groups.putIfAbsent(tx.monthLabel, () => []).add(tx);
-    }
-
-    var index = 0;
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.historyTab)),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(
-            AppSpacing.lg, AppSpacing.sm, AppSpacing.lg, 120),
-        children: [
-          for (final entry in groups.entries) ...[
-            Padding(
-              padding: const EdgeInsets.only(
-                  top: AppSpacing.md, bottom: AppSpacing.md),
-              child: Text(entry.key,
-                  style: textTheme.titleSmall
-                      ?.copyWith(fontWeight: FontWeight.w700)),
-            ),
-            for (final tx in entry.value)
-              Padding(
-                padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                child: _TxTile(tx: tx)
-                    .animate(delay: (80 * index++).ms)
-                    .fadeIn(duration: 300.ms)
-                    .moveY(begin: 12, curve: Curves.easeOutCubic),
+      body: SafeArea(
+        bottom: false,
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.gutter,
+            AppSpacing.md,
+            AppSpacing.gutter,
+            AppSpacing.navClearance,
+          ),
+          children: [
+            Text(l10n.history,
+                style: AppTheme.display(size: 30, color: c.text)),
+            const SizedBox(height: AppSpacing.xl),
+            for (final group in HistoryMock.groups) ...[
+              Text(group.monthLabel.toUpperCase(),
+                  style: AppTheme.sectionLabel(context)),
+              const SizedBox(height: AppSpacing.md),
+              Container(
+                decoration: BoxDecoration(
+                  color: c.surface,
+                  borderRadius: BorderRadius.circular(AppRadius.card),
+                  border: Border.all(color: c.border),
+                ),
+                child: Column(
+                  children: [
+                    for (var i = 0; i < group.items.length; i++) ...[
+                      if (i > 0) Divider(height: 1, color: c.border),
+                      _TransactionRow(record: group.items[i]),
+                    ],
+                  ],
+                ),
               ),
-          ],
-        ],
+              const SizedBox(height: AppSpacing.xl),
+            ],
+          ]
+              .animate(interval: 60.ms)
+              .fadeIn(duration: 500.ms, curve: const Cubic(.2, .8, .2, 1))
+              .moveY(begin: 8, end: 0, duration: 500.ms),
+        ),
       ),
     );
   }
 }
 
-class _TxTile extends StatelessWidget {
-  final TransactionRecord tx;
-  const _TxTile({required this.tx});
+class _TransactionRow extends StatelessWidget {
+  final TransactionRecord record;
+
+  const _TransactionRow({required this.record});
+
+  (String, Color) _statusMeta(AppLocalizations l10n) =>
+      switch (record.status) {
+        TxStatus.completed => (l10n.completed, AppColors.success),
+        TxStatus.pending => (l10n.pending, AppColors.warn),
+        TxStatus.failed => (l10n.failed, const Color(0xFFFF7A86)),
+      };
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final scheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
+    final c = AppColors.of(context);
+    final (statusLabel, statusColor) = _statusMeta(l10n);
 
-    final (label, bg, fg) = switch (tx.status) {
-      TxStatus.success => (
-          l10n.statusSuccess,
-          const Color(0xFFD9F2E3),
-          const Color(0xFF116B3E)
-        ),
-      TxStatus.pending => (
-          l10n.statusPending,
-          scheme.surfaceContainerHigh,
-          scheme.onSurfaceVariant
-        ),
-      TxStatus.failed => (
-          l10n.statusFailed,
-          scheme.errorContainer,
-          scheme.onErrorContainer
-        ),
-    };
-
-    return AppCard(
+    return Padding(
+      padding: const EdgeInsets.all(AppSpacing.lg),
       child: Row(
         children: [
+          Text(record.flagEmoji, style: const TextStyle(fontSize: 24)),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(tx.title,
-                    style: textTheme.bodyMedium
-                        ?.copyWith(fontWeight: FontWeight.w600)),
-                const SizedBox(height: AppSpacing.xs),
-                Text(tx.amountLabel,
-                    style: textTheme.bodySmall
-                        ?.copyWith(color: scheme.onSurfaceVariant)),
+                Text(record.countryName,
+                    style: Theme.of(context).textTheme.titleSmall),
+                const SizedBox(height: 1),
+                Text(
+                  '${record.operatorName} · ${record.dataLabel} · '
+                  '${record.dateLabel}',
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall
+                      ?.copyWith(color: c.dim),
+                ),
               ],
             ),
           ),
-          Container(
-            padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.md, vertical: AppSpacing.xs),
-            decoration: BoxDecoration(
-              color: bg,
-              borderRadius: BorderRadius.circular(AppRadius.sm),
-            ),
-            child: Text(label,
-                style: textTheme.labelMedium
-                    ?.copyWith(color: fg, fontWeight: FontWeight.w700)),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(record.amountLabel,
+                  style: Theme.of(context).textTheme.titleSmall),
+              const SizedBox(height: 4),
+              StatusChip(label: statusLabel, color: statusColor),
+            ],
           ),
         ],
       ),

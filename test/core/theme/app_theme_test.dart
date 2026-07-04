@@ -1,25 +1,37 @@
 // test/core/theme/app_theme_test.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:travelconnect/core/theme/app_colors.dart';
 import 'package:travelconnect/core/theme/app_theme.dart';
 
 void main() {
-  // testWidgets (not plain test): GoogleFonts fires an async font fetch whose
-  // failure would otherwise be reported after a plain test() completes.
-  testWidgets('light and dark themes use the warm orange seed', (tester) async {
+  test('liquid-glass palette: primary blue, AppColors extension present', () {
     final light = AppTheme.light();
     final dark = AppTheme.dark();
+
     expect(light.useMaterial3, isTrue);
     expect(light.colorScheme.brightness, Brightness.light);
     expect(dark.colorScheme.brightness, Brightness.dark);
-    // Seed #FF6B35 produces an orange-hued primary in light mode.
-    final hue = HSLColor.fromColor(light.colorScheme.primary).hue;
-    expect(hue, inInclusiveRange(10, 50));
+
+    expect(dark.colorScheme.primary, const Color(0xFF2F80FF));
+    expect(dark.colorScheme.secondary, const Color(0xFF37E0FF));
+
+    expect(dark.extension<AppColors>(), isNotNull);
+    expect(dark.extension<AppColors>()!.bg, const Color(0xFF05070F));
+    expect(light.extension<AppColors>()!.bg, const Color(0xFFEEF2F9));
   });
 
-  testWidgets('component themes are configured', (tester) async {
-    final light = AppTheme.light();
-    expect(light.inputDecorationTheme.filled, isTrue);
-    expect(light.cardTheme.shape, isA<RoundedRectangleBorder>());
+  test('typography: Clash Display for display, Satoshi for body', () {
+    final dark = AppTheme.dark();
+    expect(dark.textTheme.displayLarge!.fontFamily, 'ClashDisplay');
+    expect(dark.textTheme.displayLarge!.fontSize, 38);
+    expect(dark.textTheme.bodyMedium!.fontFamily, 'Satoshi');
+    expect(dark.textTheme.labelLarge!.fontWeight, FontWeight.w700);
+  });
+
+  test('component themes are configured', () {
+    final dark = AppTheme.dark();
+    expect(dark.inputDecorationTheme.filled, isTrue);
+    expect(dark.cardTheme.shape, isA<RoundedRectangleBorder>());
   });
 }

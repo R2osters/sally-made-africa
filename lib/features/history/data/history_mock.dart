@@ -1,26 +1,67 @@
-// Hard-coded showcase data. Replaced by Supabase in the Notifications+History sub-project.
 import '../domain/transaction_record.dart';
 
-const mockTransactions = <TransactionRecord>[
-  TransactionRecord(
-    id: 'tx-3',
-    title: 'MTN Ghana — 5 GB',
-    monthLabel: 'July 2026',
-    amountLabel: '3 500 FCFA',
-    status: TxStatus.success,
-  ),
-  TransactionRecord(
-    id: 'tx-2',
-    title: 'Togocom — 10 GB',
-    monthLabel: 'June 2026',
-    amountLabel: '6 000 FCFA',
-    status: TxStatus.pending,
-  ),
-  TransactionRecord(
-    id: 'tx-1',
-    title: 'Orange Sénégal — 8 GB',
-    monthLabel: 'June 2026',
-    amountLabel: '5 000 FCFA',
-    status: TxStatus.failed,
-  ),
-];
+/// Showcase data from the design prototype (July/June 2026).
+abstract final class HistoryMock {
+  static const groups = <TransactionMonthGroup>[
+    TransactionMonthGroup(
+      monthLabel: 'Juillet 2026',
+      items: [
+        TransactionRecord(
+          id: 'tx-1',
+          countryName: 'Sénégal',
+          flagEmoji: '🇸🇳',
+          operatorName: 'Orange',
+          dataLabel: '6 Go',
+          dateLabel: '2 juil.',
+          amountLabel: '3 500 FCFA',
+          status: TxStatus.completed,
+        ),
+        TransactionRecord(
+          id: 'tx-2',
+          countryName: 'Ghana',
+          flagEmoji: '🇬🇭',
+          operatorName: 'MTN',
+          dataLabel: '15 Go',
+          dateLabel: '1 juil.',
+          amountLabel: '₵99',
+          status: TxStatus.completed,
+        ),
+      ],
+    ),
+    TransactionMonthGroup(
+      monthLabel: 'Juin 2026',
+      items: [
+        TransactionRecord(
+          id: 'tx-3',
+          countryName: "Côte d'Ivoire",
+          flagEmoji: '🇨🇮',
+          operatorName: 'Orange',
+          dataLabel: '6 Go',
+          dateLabel: '28 juin',
+          amountLabel: '3 500 FCFA',
+          status: TxStatus.pending,
+        ),
+        TransactionRecord(
+          id: 'tx-4',
+          countryName: 'Nigeria',
+          flagEmoji: '🇳🇬',
+          operatorName: 'MTN',
+          dataLabel: '1,5 Go',
+          dateLabel: '19 juin',
+          amountLabel: '₦900',
+          status: TxStatus.failed,
+        ),
+        TransactionRecord(
+          id: 'tx-5',
+          countryName: 'Bénin',
+          flagEmoji: '🇧🇯',
+          operatorName: 'Celtiis',
+          dataLabel: '15 Go',
+          dateLabel: '12 juin',
+          amountLabel: '7 900 FCFA',
+          status: TxStatus.completed,
+        ),
+      ],
+    ),
+  ];
+}

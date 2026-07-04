@@ -9,24 +9,26 @@ void main() {
     SharedPreferences.setMockInitialValues({});
   });
 
-  testWidgets('app boots on Home and switches tabs', (tester) async {
+  testWidgets('app boots on Explore and switches tabs (fr default)',
+      (tester) async {
     await tester.pumpWidget(
       const ProviderScope(child: TravelConnectApp()),
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Home'), findsWidgets);
+    // Home greeting from the showcase profile.
+    expect(find.textContaining('Aïssatou'), findsWidgets);
 
-    await tester.tap(find.text('My Plans').last);
+    await tester.tap(find.text('Mes forfaits').last);
     await tester.pumpAndSettle();
-    expect(find.text('My Plans'), findsWidgets);
+    expect(find.text('Mes forfaits'), findsWidgets);
 
-    await tester.tap(find.text('History').last);
+    await tester.tap(find.text('Historique').last);
     await tester.pumpAndSettle();
-    expect(find.text('History'), findsWidgets);
+    expect(find.text('Historique'), findsWidgets);
 
-    await tester.tap(find.text('Profile').last);
+    await tester.tap(find.text('Profil').last);
     await tester.pumpAndSettle();
-    expect(find.text('Profile'), findsWidgets);
+    expect(find.text('Profil'), findsWidgets);
   });
 }
