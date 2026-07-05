@@ -14,6 +14,7 @@ import '../../../shared/widgets/globe_view.dart';
 import '../../catalog/data/catalog_mock.dart';
 import '../../catalog/domain/catalog_models.dart';
 import '../../catalog/presentation/catalog_sheets.dart';
+import '../../notifications/data/notifications_provider.dart';
 import '../../profile/data/user_profile_provider.dart';
 
 /// Explore — the globe is the hero and the primary navigation: tap a served
@@ -31,6 +32,7 @@ class HomeScreen extends ConsumerWidget {
     final c = AppColors.of(context);
     final locale = ref.watch(localeProvider);
     final profile = ref.watch(userProfileProvider);
+    final unread = ref.watch(unreadNotificationsCountProvider);
 
     return Scaffold(
       body: SafeArea(
@@ -74,10 +76,38 @@ class HomeScreen extends ConsumerWidget {
                   onTap: () => ref.read(localeProvider.notifier).toggle(),
                 ),
                 const SizedBox(width: AppSpacing.sm),
-                _RoundIconButton(
-                  child: Icon(Icons.notifications_none_rounded,
-                      size: 20, color: c.text),
-                  onTap: () => context.push('/notifications'),
+                Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    _RoundIconButton(
+                      child: Icon(Icons.notifications_none_rounded,
+                          size: 20, color: c.text),
+                      onTap: () => context.push('/notifications'),
+                    ),
+                    if (unread > 0)
+                      Positioned(
+                        top: -2,
+                        right: -2,
+                        child: Container(
+                          width: 18,
+                          height: 18,
+                          alignment: Alignment.center,
+                          decoration: const BoxDecoration(
+                            color: AppColors.danger,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Text(
+                            '$unread',
+                            style: const TextStyle(
+                              fontFamily: AppTheme.textFamily,
+                              fontSize: 10.5,
+                              fontWeight: FontWeight.w900,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ],
             ),

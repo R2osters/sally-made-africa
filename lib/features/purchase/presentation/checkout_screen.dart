@@ -15,6 +15,8 @@ import '../../catalog/domain/catalog_models.dart';
 import '../../catalog/presentation/catalog_sheets.dart' show OperatorBadge;
 import '../../history/data/history_provider.dart';
 import '../../my_plans/data/purchased_plans_provider.dart';
+import '../../notifications/data/notifications_provider.dart';
+import '../../notifications/domain/app_notification.dart';
 
 class CheckoutScreen extends ConsumerStatefulWidget {
   final SelectedPlan plan;
@@ -36,6 +38,19 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
           plan,
           locale: Localizations.localeOf(context).languageCode,
         );
+    final l10n = AppLocalizations.of(context)!;
+    ref.read(notificationsProvider.notifier).push(AppNotification(
+          kind: NotificationKind.success,
+          titleFr: 'Forfait activé',
+          titleEn: 'Plan activated',
+          bodyFr:
+              'Votre eSIM ${plan.operator.name} ${plan.spec.dataLabel} pour ${plan.country.name} est prête à installer.',
+          bodyEn:
+              'Your ${plan.operator.name} ${plan.spec.dataLabel} eSIM for ${plan.country.name} is ready to install.',
+          timeFr: l10n.justNow,
+          timeEn: l10n.justNow,
+          unread: true,
+        ));
     context.pushReplacement('/success', extra: plan);
   }
 
