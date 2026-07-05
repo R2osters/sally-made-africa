@@ -20,4 +20,15 @@ class AppNotification {
     required this.timeEn,
     this.unread = false,
   });
+
+  AppNotification asRead() => AppNotification(
+        kind: kind,
+        titleFr: titleFr,
+        titleEn: titleEn,
+        bodyFr: bodyFr,
+        bodyEn: bodyEn,
+        timeFr: timeFr,
+        timeEn: timeEn,
+        unread: false,
+      );
 }

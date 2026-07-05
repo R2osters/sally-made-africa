@@ -1,17 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../auth/presentation/auth_shell.dart' show BackChip;
-import '../data/notifications_mock.dart';
+import '../data/notifications_provider.dart';
 import '../domain/app_notification.dart';
 
-class NotificationsScreen extends StatelessWidget {
+class NotificationsScreen extends ConsumerStatefulWidget {
   const NotificationsScreen({super.key});
+
+  @override
+  ConsumerState<NotificationsScreen> createState() =>
+      _NotificationsScreenState();
+}
+
+class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
+  // Snapshot taken before markAllRead so unread dots stay visible while the
+  // user looks at this opening of the screen.
+  late final List<AppNotification> _items;
+
+  @override
+  void initState() {
+    super.initState();
+    _items = ref.read(notificationsProvider);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(notificationsProvider.notifier).markAllRead();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +56,7 @@ class NotificationsScreen extends StatelessWidget {
               ],
             ),
             const SizedBox(height: AppSpacing.xl),
-            for (final n in NotificationsMock.items) ...[
+            for (final n in _items) ...[
               _NotificationTile(notification: n, fr: fr),
               const SizedBox(height: AppSpacing.md),
             ],
