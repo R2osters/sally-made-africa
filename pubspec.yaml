@@ -50,6 +50,11 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^4.0.0
 
+# Pin app_links: 6.4.0+ uses flutter.compileSdkVersion (needs Flutter >=3.27).
+# This project runs Flutter 3.24.4, so hold at the last compatible release.
+dependency_overrides:
+  app_links: 6.3.3
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
