@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://api.fontshare.com">
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700,500&f[]=satoshi@400,500,700,900&f[]=jetbrains-mono@400,500&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  doc-page:not(:defined){visibility:hidden}
+  body{margin:0;background:#3a4152}
+  .ds h1,.ds h2,.ds h3,.ds .display{font-family:'Clash Display',sans-serif}
+  .ds{font-family:'Satoshi',sans-serif;color:#141a24;line-height:1.5}
+  .ds p{text-wrap:pretty}
+  .mono{font-family:'JetBrains Mono',monospace}
+  .sw{border-radius:12px;height:66px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
+  .tok{display:flex;flex-direction:column;gap:2px}
+  .kicker{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#7d8598}
+  .rule{height:1px;background:#e7ebf2;border:0;margin:0}
+  .chip{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;font-size:12px;font-weight:700}
+  .card{border:1px solid #e7ebf2;border-radius:16px;padding:18px 20px;break-inside:avoid}
+  table{border-collapse:collapse;width:100%}
+  .ds td,.ds th{text-align:left;padding:9px 10px;border-bottom:1px solid #eef1f6;font-size:13.5px;vertical-align:top}
+  .ds th{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#7d8598}
+  pre{background:#0a1120;color:#dfe8f7;border-radius:14px;padding:18px 20px;overflow:auto;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.7;break-inside:avoid}
+  pre .c{color:#5c6479}pre .k{color:#37e0ff}pre .n{color:#ffb27a}pre .s{color:#8fe3b0}
+  .swatchrow{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .specrow{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+</style>
+</helmet>
+<x-import component-from-global-scope="doc-page" from="./doc-page.js" size="letter" margin="0.7in" hint-size="8.5in,11in">
+  <div class="ds">
+
+    <!-- COVER -->
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:26px">
+      <div style="width:44px;height:44px;border-radius:13px;background:linear-gradient(140deg,#3b8bff,#37e0ff);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 20px -8px rgba(47,128,255,.6)">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#03121c" stroke-width="1.9"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.5 2.5 15.5 0 18M12 3c-2.5 2.5-2.5 15.5 0 18"/></svg>
+      </div>
+      <div>
+        <p class="kicker" style="color:#2f80ff">TravelConnect · eSIM Data · Afrique</p>
+        <p style="font-size:13px;color:#7d8598;margin:2px 0 0">Design Specifications — v1.0</p>
+      </div>
+    </div>
+    <h1 style="font-size:52px;line-height:1;letter-spacing:-.02em;margin:0 0 14px;font-weight:600">Système de design<br>TravelConnect</h1>
+    <p style="font-size:16px;color:#4a5364;max-width:560px;margin:0 0 22px">Référence complète pour l'implémentation Flutter : tokens de couleur, typographie, espacements, effets et composants. Direction « liquid glass » high-tech — fond spatial profond, verre dépoli, accent bleu électrique → cyan.</p>
+
+    <div class="specrow" style="margin-bottom:8px">
+      <div class="card">
+        <p class="kicker">Principe 01</p>
+        <h3 style="font-size:17px;margin:6px 0 4px">Éditorial, pas décoratif</h3>
+        <p style="font-size:13px;color:#4a5364;margin:0">Titres larges à fort contraste, corps lisible, respiration généreuse. Zéro dégradé lourd, zéro ombre exagérée.</p>
+      </div>
+      <div class="card">
+        <p class="kicker">Principe 02</p>
+        <h3 style="font-size:17px;margin:6px 0 4px">Verre & profondeur</h3>
+        <p style="font-size:13px;color:#4a5364;margin:0">Surfaces translucides posées sur un fond sombre spatial. La lumière vient de l'accent cyan, jamais d'un dégradé plein.</p>
+      </div>
+      <div class="card">
+        <p class="kicker">Principe 03</p>
+        <h3 style="font-size:17px;margin:6px 0 4px">Le globe est le héros</h3>
+        <p style="font-size:13px;color:#4a5364;margin:0">La 3D et le mouvement servent la navigation (choisir un pays), pas la décoration. Tout le reste reste calme.</p>
+      </div>
+    </div>
+
+    <!-- COLOR: DARK -->
+    <h2 style="font-size:26px;letter-spacing:-.01em;margin:38px 0 4px">1 · Couleurs — thème sombre</h2>
+    <p style="font-size:14px;color:#4a5364;margin:0 0 18px">Thème principal. Les surfaces sont des blancs translucides empilés sur le fond, jamais des gris opaques — c'est ce qui donne l'effet verre.</p>
+
+    <p class="kicker" style="margin-bottom:10px">Fonds & surfaces</p>
+    <div class="swatchrow" style="margin-bottom:20px">
+      <div class="tok"><div class="sw" style="background:#05070f"></div><b style="font-size:13px;margin-top:8px">Canvas</b><span class="mono" style="font-size:11.5px;color:#7d8598">#05070F</span><span style="font-size:11px;color:#9aa3b2">bg</span></div>
+      <div class="tok"><div class="sw" style="background:#0a1120"></div><b style="font-size:13px;margin-top:8px">Élevé</b><span class="mono" style="font-size:11.5px;color:#7d8598">#0A1120</span><span style="font-size:11px;color:#9aa3b2">bg-2</span></div>
+      <div class="tok"><div class="sw" style="background:linear-gradient(#0a1120,#0a1120),linear-gradient(45deg,#ddd 25%,#fff 0,#fff 75%,#ddd 0);background-blend-mode:normal;position:relative"><div style="position:absolute;inset:0;border-radius:12px;background:rgba(255,255,255,.045)"></div></div><b style="font-size:13px;margin-top:8px">Surface</b><span class="mono" style="font-size:11.5px;color:#7d8598">#FFF · 4.5%</span><span style="font-size:11px;color:#9aa3b2">surface</span></div>
+      <div class="tok"><div class="sw" style="background:#0a1120;position:relative"><div style="position:absolute;inset:0;border-radius:12px;background:rgba(255,255,255,.07)"></div></div><b style="font-size:13px;margin-top:8px">Surface 2</b><span class="mono" style="font-size:11.5px;color:#7d8598">#FFF · 7%</span><span style="font-size:11px;color:#9aa3b2">surface-2</span></div>
+    </div>
+
+    <p class="kicker" style="margin-bottom:10px">Texte & bordures</p>
+    <div class="swatchrow" style="margin-bottom:20px">
+      <div class="tok"><div class="sw" style="background:#eaf0fb"></div><b style="font-size:13px;margin-top:8px">Texte</b><span class="mono" style="font-size:11.5px;color:#7d8598">#EAF0FB</span><span style="font-size:11px;color:#9aa3b2">text</span></div>
+      <div class="tok"><div class="sw" style="background:#95a1b8"></div><b style="font-size:13px;margin-top:8px">Atténué</b><span class="mono" style="font-size:11.5px;color:#7d8598">#95A1B8</span><span style="font-size:11px;color:#9aa3b2">dim</span></div>
+      <div class="tok"><div class="sw" style="background:#5c6479"></div><b style="font-size:13px;margin-top:8px">Discret</b><span class="mono" style="font-size:11.5px;color:#7d8598">#5C6479</span><span style="font-size:11px;color:#9aa3b2">faint</span></div>
+      <div class="tok"><div class="sw" style="background:#0a1120;position:relative"><div style="position:absolute;inset:0;border-radius:12px;border:1px solid rgba(255,255,255,.16)"></div></div><b style="font-size:13px;margin-top:8px">Bordure</b><span class="mono" style="font-size:11.5px;color:#7d8598">#FFF · 9–16%</span><span style="font-size:11px;color:#9aa3b2">border</span></div>
+    </div>
+
+    <p class="kicker" style="margin-bottom:10px">Accent & sémantique</p>
+    <div class="swatchrow">
+      <div class="tok"><div class="sw" style="background:#2f80ff"></div><b style="font-size:13px;margin-top:8px">Accent</b><span class="mono" style="font-size:11.5px;color:#7d8598">#2F80FF</span><span style="font-size:11px;color:#9aa3b2">primary</span></div>
+      <div class="tok"><div class="sw" style="background:#37e0ff"></div><b style="font-size:13px;margin-top:8px">Accent vif</b><span class="mono" style="font-size:11.5px;color:#7d8598">#37E0FF</span><span style="font-size:11px;color:#9aa3b2">accent-2</span></div>
+      <div class="tok"><div class="sw" style="background:#2fd98a"></div><b style="font-size:13px;margin-top:8px">Succès</b><span class="mono" style="font-size:11.5px;color:#7d8598">#2FD98A</span><span style="font-size:11px;color:#9aa3b2">success</span></div>
+      <div class="tok"><div class="sw" style="background:#ffb23e"></div><b style="font-size:13px;margin-top:8px">Alerte</b><span class="mono" style="font-size:11.5px;color:#7d8598">#FFB23E</span><span style="font-size:11px;color:#9aa3b2">warn</span></div>
+    </div>
+    <div style="display:flex;gap:14px;margin-top:14px;align-items:center">
+      <div style="flex:1;height:52px;border-radius:12px;background:linear-gradient(135deg,#3b8bff,#2f6bff)"></div>
+      <p style="font-size:12.5px;color:#4a5364;margin:0;flex:1"><b>Dégradé primaire</b> — <span class="mono">135° · #3B8BFF → #2F6BFF</span>. Réservé aux boutons d'action principaux et aux CTA. Le seul dégradé autorisé.</p>
+      <div style="width:110px;height:52px;border-radius:12px;background:#ff5c6c;display:flex;align-items:center;justify-content:center"><span class="mono" style="font-size:11px;color:#fff">#FF5C6C</span></div>
+    </div>
+
+    <!-- COLOR: LIGHT -->
+    <h2 style="font-size:26px;letter-spacing:-.01em;margin:38px 0 4px">2 · Couleurs — thème clair</h2>
+    <p style="font-size:14px;color:#4a5364;margin:0 0 18px">Vrai thème clair (pas une simple inversion) : surfaces = bleu-nuit translucide sur fond gris-bleu doux. L'accent et la sémantique restent identiques. Le globe conserve son écrin sombre.</p>
+    <div class="swatchrow">
+      <div class="tok"><div class="sw" style="background:#eef2f9"></div><b style="font-size:13px;margin-top:8px">Canvas</b><span class="mono" style="font-size:11.5px;color:#7d8598">#EEF2F9</span><span style="font-size:11px;color:#9aa3b2">bg</span></div>
+      <div class="tok"><div class="sw" style="background:#ffffff"></div><b style="font-size:13px;margin-top:8px">Élevé</b><span class="mono" style="font-size:11.5px;color:#7d8598">#FFFFFF</span><span style="font-size:11px;color:#9aa3b2">bg-2</span></div>
+      <div class="tok"><div class="sw" style="background:#0b1220"></div><b style="font-size:13px;margin-top:8px">Texte</b><span class="mono" style="font-size:11.5px;color:#7d8598">#0B1220</span><span style="font-size:11px;color:#9aa3b2">text</span></div>
+      <div class="tok"><div class="sw" style="background:#586378"></div><b style="font-size:13px;margin-top:8px">Atténué</b><span class="mono" style="font-size:11.5px;color:#7d8598">#586378</span><span style="font-size:11px;color:#9aa3b2">dim</span></div>
+    </div>
+    <p style="font-size:12.5px;color:#4a5364;margin:12px 0 0">Surfaces claires : <span class="mono">#0C162D</span> à 4 % (surface) / 6 % (surface-2) · Bordures : <span class="mono">#0C162D</span> à 9–14 %.</p>
+
+    <!-- TYPOGRAPHY -->
+    <h2 style="font-size:26px;letter-spacing:-.01em;margin:38px 0 4px">3 · Typographie</h2>
+    <p style="font-size:14px;color:#4a5364;margin:0 0 18px">Deux familles. Contraste fort entre un display anguleux et un corps neutre très lisible.</p>
+    <div class="specrow" style="grid-template-columns:1fr 1fr;margin-bottom:18px">
+      <div class="card">
+        <p class="kicker">Display / Titres</p>
+        <p class="display" style="font-size:40px;font-weight:600;margin:8px 0 4px;letter-spacing:-.02em">Clash Display</p>
+        <p style="font-size:13px;color:#4a5364;margin:0">Poids 600 (titres), 500 (chiffres clés). Toujours en <span class="mono">letter-spacing:-.02em</span>. Jamais pour du corps de texte.</p>
+      </div>
+      <div class="card">
+        <p class="kicker">Texte / UI</p>
+        <p style="font-size:34px;font-weight:700;margin:8px 0 4px">Satoshi</p>
+        <p style="font-size:13px;color:#4a5364;margin:0">Poids 400 / 500 / 700 / 900. Corps, labels, boutons, chiffres de prix. Labels de section en 700, uppercase, <span class="mono">.08em</span>.</p>
+      </div>
+    </div>
+    <table>
+      <thead><tr><th>Rôle</th><th>Famille · poids</th><th>Taille / interligne</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td><b>Display XL</b> — accueil</td><td>Clash 600</td><td class="mono">38 / 1.02</td><td>Écran de bienvenue, balance</td></tr>
+        <tr><td><b>Titre écran</b></td><td>Clash 600</td><td class="mono">30–32 / 1.05</td><td>H1 de chaque onglet</td></tr>
+        <tr><td><b>Titre section</b></td><td>Clash 600</td><td class="mono">22–26 / 1.05</td><td>Fenêtres flottantes, cartes</td></tr>
+        <tr><td><b>Chiffre clé</b></td><td>Clash 600</td><td class="mono">32–52</td><td>Volume data, prix, compteur</td></tr>
+        <tr><td><b>Corps</b></td><td>Satoshi 400–500</td><td class="mono">15–16 / 1.5</td><td>Paragraphes, descriptions</td></tr>
+        <tr><td><b>Label / bouton</b></td><td>Satoshi 700</td><td class="mono">14–16</td><td>Actions, valeurs</td></tr>
+        <tr><td><b>Label section</b></td><td>Satoshi 700</td><td class="mono">12 · uppercase</td><td><span class="mono">letter-spacing:.08em</span>, couleur faint</td></tr>
+        <tr><td><b>Caption / chip</b></td><td>Satoshi 600–700</td><td class="mono">11.5–13</td><td>Statuts, horodatage, méta</td></tr>
+      </tbody>
+    </table>
+
+    <!-- SPACING & RADII -->
+    <h2 style="font-size:26px;letter-spacing:-.01em;margin:38px 0 4px">4 · Espacements & rayons</h2>
+    <div class="specrow" style="grid-template-columns:1.15fr .85fr">
+      <div>
+        <p class="kicker" style="margin-bottom:12px">Échelle d'espacement — base 4 px</p>
+        <div style="display:flex;align-items:flex-end;gap:10px">
+          <div style="text-align:center"><div style="width:4px;height:4px;background:#2f80ff;border-radius:2px;margin:0 auto"></div><span class="mono" style="font-size:10px;color:#7d8598">4</span></div>
+          <div style="text-align:center"><div style="width:8px;height:8px;background:#2f80ff;border-radius:2px;margin:0 auto"></div><span class="mono" style="font-size:10px;color:#7d8598">8</span></div>
+          <div style="text-align:center"><div style="width:12px;height:12px;background:#2f80ff;border-radius:3px;margin:0 auto"></div><span class="mono" style="font-size:10px;color:#7d8598">12</span></div>
+          <div style="text-align:center"><div style="width:16px;height:16px;background:#2f80ff;border-radius:3px;margin:0 auto"></div><span class="mono" style="font-size:10px;color:#7d8598">16</span></div>
+          <div style="text-align:center"><div style="width:22px;height:22px;background:#2f80ff;border-radius:4px;margin:0 auto"></div><span class="mono" style="font-size:10px;color:#7d8598">22</span></div>
+          <div style="text-align:center"><div style="width:26px;height:26px;background:#2f80ff;border-radius:5px;margin:0 auto"></div><span class="mono" style="font-size:10px;color:#7d8598">26</span></div>
+          <div style="text-align:center"><div style="width:34px;height:34px;background:#2f6bff;border-radius:6px;margin:0 auto"></div><span class="mono" style="font-size:10px;color:#7d8598">34</span></div>
+        </div>
+        <p style="font-size:12.5px;color:#4a5364;margin:16px 0 0">Gouttières de contenu : <b>22–26 px</b>. Espacement entre cartes : <b>12–14 px</b>. Padding interne des cartes : <b>16–18 px</b>. Padding bas des écrans à onglets : <b>128 px</b> (dégagement barre de nav).</p>
+      </div>
+      <div>
+        <p class="kicker" style="margin-bottom:12px">Rayons</p>
+        <div style="display:flex;flex-direction:column;gap:9px">
+          <div style="display:flex;align-items:center;gap:10px"><div style="width:38px;height:26px;border:2px solid #2f80ff;border-radius:999px"></div><span style="font-size:12.5px">Pilule / chip · <span class="mono">999</span></span></div>
+          <div style="display:flex;align-items:center;gap:10px"><div style="width:38px;height:26px;border:2px solid #2f80ff;border-radius:14px"></div><span style="font-size:12.5px">Input / petit · <span class="mono">14–16</span></span></div>
+          <div style="display:flex;align-items:center;gap:10px"><div style="width:38px;height:26px;border:2px solid #2f80ff;border-radius:18px"></div><span style="font-size:12.5px">Bouton · <span class="mono">18</span></span></div>
+          <div style="display:flex;align-items:center;gap:10px"><div style="width:38px;height:26px;border:2px solid #2f80ff;border-radius:22px"></div><span style="font-size:12.5px">Carte · <span class="mono">20–24</span></span></div>
+          <div style="display:flex;align-items:center;gap:10px"><div style="width:38px;height:26px;border:2px solid #2f6bff;border-radius:26px 26px 8px 8px"></div><span style="font-size:12.5px">Nav / sheet · <span class="mono">26–34</span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EFFECTS -->
+    <h2 style="font-size:26px;letter-spacing:-.01em;margin:38px 0 4px">5 · Verre, élévation & mouvement</h2>
+    <div class="specrow">
+      <div class="card">
+        <p class="kicker">Liquid glass</p>
+        <p style="font-size:13px;color:#4a5364;margin:8px 0 0"><b>Surfaces</b> : <span class="mono">blur(14px)</span>.<br><b>Barre de nav</b> : <span class="mono">blur(26px) saturate(150%)</span>, fond <span class="mono">rgba(12,18,32,.72)</span>.<br><b>Fenêtres flottantes</b> : <span class="mono">blur(40px) saturate(200%)</span> + reflet spéculaire haut.</p>
+      </div>
+      <div class="card">
+        <p class="kicker">Élévation</p>
+        <p style="font-size:13px;color:#4a5364;margin:8px 0 0">Ombres larges et douces, teintées de noir profond — jamais de gris.<br><span class="mono">0 18px 44px -14px rgba(0,0,0,.8)</span>.<br>Lueur d'accent réservée aux CTA : <span class="mono">0 14px 34px -10px accent/.7</span>.</p>
+      </div>
+      <div class="card">
+        <p class="kicker">Mouvement</p>
+        <p style="font-size:13px;color:#4a5364;margin:8px 0 0"><b>Entrée</b> : fondu+8px, <span class="mono">.5s (.2,.8,.2,1)</span>, en cascade.<br><b>Sheet</b> : montée <span class="mono">.42s (.2,.9,.2,1)</span>.<br><b>Appui</b> : <span class="mono">scale(.96)</span>.<br><b>Globe</b> : lévitation 6 s + rotation continue.</p>
+      </div>
+    </div>
+
+    <!-- COMPONENTS -->
+    <h2 style="font-size:26px;letter-spacing:-.01em;margin:38px 0 16px">6 · Composants</h2>
+
+    <!-- buttons -->
+    <div class="card" style="margin-bottom:14px;background:radial-gradient(120% 100% at 50% 0,#0e1830,#070b16)">
+      <p class="kicker" style="color:#8fa0bd">Boutons</p>
+      <div style="display:flex;gap:12px;align-items:center;margin-top:12px;flex-wrap:wrap">
+        <div style="height:52px;padding:0 26px;display:flex;align-items:center;border-radius:18px;background:linear-gradient(135deg,#3b8bff,#2f6bff);color:#fff;font-weight:700;font-size:15px;box-shadow:0 14px 30px -12px rgba(47,128,255,.7)">Primaire</div>
+        <div style="height:52px;padding:0 26px;display:flex;align-items:center;border-radius:18px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);color:#eaf0fb;font-weight:700;font-size:15px">Secondaire</div>
+        <div style="height:52px;padding:0 20px;display:flex;align-items:center;color:#95a1b8;font-weight:600;font-size:14.5px">Fantôme →</div>
+      </div>
+      <p style="font-size:12px;color:#8fa0bd;margin:14px 0 0">Hauteur 52–56 px · rayon 18 · texte Satoshi 700. Primaire = dégradé + lueur ; secondaire = verre + bordure ; fantôme = texte seul.</p>
+    </div>
+
+    <!-- chips + inputs -->
+    <div class="specrow" style="grid-template-columns:1fr 1fr;margin-bottom:14px">
+      <div class="card" style="background:radial-gradient(120% 100% at 50% 0,#0e1830,#070b16)">
+        <p class="kicker" style="color:#8fa0bd">Chips de statut</p>
+        <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+          <span class="chip" style="background:rgba(47,217,138,.14);color:#2fd98a">Actif</span>
+          <span class="chip" style="background:rgba(255,178,62,.14);color:#ffb23e">En attente</span>
+          <span class="chip" style="background:rgba(255,92,108,.13);color:#ff7a86">Expiré</span>
+        </div>
+        <p style="font-size:12px;color:#8fa0bd;margin:14px 0 0">Pilule, fond couleur à 13–14 %, texte couleur pleine 700 · 11.5 px.</p>
+      </div>
+      <div class="card" style="background:radial-gradient(120% 100% at 50% 0,#0e1830,#070b16)">
+        <p class="kicker" style="color:#8fa0bd">Champ de saisie</p>
+        <div style="display:flex;align-items:center;gap:11px;height:52px;padding:0 16px;border-radius:16px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09);margin-top:12px">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#95a1b8" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M4 7l8 6 8-6"/></svg>
+          <span style="color:#95a1b8;font-size:14.5px">vous@exemple.com</span>
+        </div>
+        <p style="font-size:12px;color:#8fa0bd;margin:14px 0 0">Hauteur 56 · rayon 16 · icône à gauche · label uppercase au-dessus. Focus = bordure accent.</p>
+      </div>
+    </div>
+
+    <!-- transaction / list card -->
+    <div class="card" style="margin-bottom:14px;background:radial-gradient(120% 100% at 50% 0,#0e1830,#070b16)">
+      <p class="kicker" style="color:#8fa0bd">Carte de transaction / liste</p>
+      <div style="display:flex;align-items:center;gap:13px;margin-top:12px">
+        <div style="width:32px;height:23px;border-radius:6px;background:linear-gradient(#00853f 33%,#fcd116 33%,#fcd116 66%,#e31b23 66%)"></div>
+        <div style="flex:1"><p style="color:#eaf0fb;font-weight:700;font-size:15px;margin:0">Sénégal</p><p style="color:#95a1b8;font-size:12.5px;margin:2px 0 0">Orange · 6 Go · 2 juil.</p></div>
+        <div style="text-align:right"><p style="color:#eaf0fb;font-weight:700;font-size:14.5px;margin:0">3 500 FCFA</p><span class="chip" style="background:rgba(47,217,138,.14);color:#2fd98a;margin-top:4px;font-size:11px">Réussi</span></div>
+      </div>
+      <p style="font-size:12px;color:#8fa0bd;margin:14px 0 0">Drapeau réel (image) · titre pays · sous-ligne opérateur·data·date · montant + chip. Regroupées par mois dans un conteneur verre unique, séparateurs internes 1 px.</p>
+    </div>
+
+    <p style="font-size:12.5px;color:#4a5364;margin:0">Autres composants suivant les mêmes règles : <b>carte opérateur</b> (pastille couleur marque + chevron), <b>carte forfait</b> (data en Clash + prix cyan), <b>carte plan actif</b> (barre de progression + anneau conique), <b>barre de nav</b> (4 onglets, pilule verre, actif = cyan), <b>fenêtre flottante</b> (poignée, rayon 34, remonte du bas).</p>
+
+    <!-- DART -->
+    <h2 style="font-size:26px;letter-spacing:-.01em;margin:38px 0 4px">7 · Implémentation Flutter</h2>
+    <p style="font-size:14px;color:#4a5364;margin:0 0 14px">Point de départ pour <span class="mono">lib/core/theme/app_theme.dart</span>. Polices via <span class="mono">google_fonts</span> ou fichiers locaux ; effet verre via <span class="mono">BackdropFilter + ImageFilter.blur</span>.</p>
+    {{ codeEl }}
+
+    <!-- SCREENS -->
+    <h2 style="font-size:26px;letter-spacing:-.01em;margin:36px 0 4px">8 · Inventaire des écrans</h2>
+    <p style="font-size:14px;color:#4a5364;margin:0 0 14px">11 écrans, bilingues FR/EN, sombre + clair.</p>
+    <div class="specrow">
+      <div class="card"><p class="kicker">Auth</p><p style="font-size:13px;color:#141a24;margin:8px 0 0;font-weight:500">Bienvenue (globe 3D) · Connexion · Inscription · Vérification OTP</p></div>
+      <div class="card"><p class="kicker">Cœur — 4 onglets</p><p style="font-size:13px;color:#141a24;margin:8px 0 0;font-weight:500">Explorer (globe) · Mes forfaits · Historique · Profil</p></div>
+      <div class="card"><p class="kicker">Achat & plus</p><p style="font-size:13px;color:#141a24;margin:8px 0 0;font-weight:500">Opérateurs → forfaits (sheet) · Détail forfait · Paiement · Succès · Plan actif (QR) · Notifications</p></div>
+    </div>
+
+    <div class="rule" style="margin:34px 0 16px"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <p style="font-size:12px;color:#9aa3b2;margin:0">TravelConnect · Design Specifications v1.0</p>
+      <p style="font-size:12px;color:#9aa3b2;margin:0">Le prototype interactif fait foi pour tout comportement non décrit ici.</p>
+    </div>
+
+  </div>
+</x-import>
+<template id="__bundler_thumbnail">
+  <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="#05070f"/><circle cx="50" cy="42" r="22" fill="none" stroke="#37e0ff" stroke-width="2"/><path d="M28 42h44M50 20c8 8 8 36 0 44M50 20c-8 8-8 36 0 44" fill="none" stroke="#2f80ff" stroke-width="1.5"/><rect x="30" y="74" width="40" height="7" rx="3.5" fill="#2f80ff"/></svg>
+</template>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals(){
+    const code = [
+      "// lib/core/theme/app_tokens.dart",
+      "class TCColors {",
+      "  static const bg         = Color(0xFF05070F);",
+      "  static const bgElevated = Color(0xFF0A1120);",
+      "  static const text       = Color(0xFFEAF0FB);",
+      "  static const dim        = Color(0xFF95A1B8);",
+      "  static const faint      = Color(0xFF5C6479);",
+      "  static const accent     = Color(0xFF2F80FF);",
+      "  static const accent2    = Color(0xFF37E0FF);",
+      "  static const success    = Color(0xFF2FD98A);",
+      "  static const warn       = Color(0xFFFFB23E);",
+      "  static const danger     = Color(0xFFFF5C6C);",
+      "  // surfaces = white overlays",
+      "  static Color surface  = Colors.white.withOpacity(0.045);",
+      "  static Color surface2 = Colors.white.withOpacity(0.07);",
+      "  static Color border   = Colors.white.withOpacity(0.09);",
+      "}",
+      "",
+      "final tcDark = ThemeData(",
+      "  brightness: Brightness.dark,",
+      "  scaffoldBackgroundColor: TCColors.bg,",
+      "  colorScheme: const ColorScheme.dark(",
+      "    primary: TCColors.accent, secondary: TCColors.accent2,",
+      "    surface: TCColors.bgElevated, error: TCColors.danger,",
+      "  ),",
+      "  textTheme: TextTheme(",
+      "    displayLarge: TextStyle(fontFamily: 'ClashDisplay',",
+      "      fontWeight: FontWeight.w600, letterSpacing: -0.7),",
+      "    bodyMedium: TextStyle(fontFamily: 'Satoshi',",
+      "      fontWeight: FontWeight.w400, height: 1.5),",
+      "  ),",
+      ");",
+      "",
+      "// radii and spacing scale",
+      "const rSm = 14.0, rMd = 18.0, rCard = 22.0, rSheet = 34.0;",
+      "const space = [4, 8, 12, 16, 22, 26, 34];",
+    ].join("\n");
+
+    const KW = new Set(['class','static','const','final','import']);
+    const colorFor = { c:'#5c6479', s:'#8fe3b0', n:'#ffb27a', k:'#37e0ff', t:'#cfe0f5' };
+    const tokenizeLine = (line, li) => {
+      const parts = [];
+      if(line.trim().startsWith('//')){ parts.push(React.createElement('span',{style:{color:colorFor.c}}, line)); return React.createElement('div',{key:li,style:{whiteSpace:'pre'}}, parts.length?parts:'\u00a0'); }
+      // regex: strings | 0xHEX | numbers | identifiers | other
+      const re = /('[^']*')|(0x[0-9A-Fa-f]+)|(\b\d+\.?\d*\b)|([A-Za-z_][A-Za-z0-9_]*)|([^A-Za-z0-9_']+)/g;
+      let m, i=0;
+      while((m = re.exec(line))){
+        let col = colorFor.t, txt = m[0];
+        if(m[1]) col = colorFor.s;
+        else if(m[2] || m[3]) col = colorFor.n;
+        else if(m[4]) col = KW.has(m[4]) ? colorFor.k : (/^[A-Z]/.test(m[4]) ? '#eaf0fb' : colorFor.t);
+        else col = colorFor.t;
+        parts.push(React.createElement('span',{key:i++,style:{color:col}}, txt));
+      }
+      return React.createElement('div',{key:li,style:{whiteSpace:'pre'}}, parts.length?parts:'\u00a0');
+    };
+    const lines = code.split('\n').map((l,i)=>tokenizeLine(l,i));
+    const codeEl = React.createElement('pre',{
+      style:{ background:'#0a1120', color:'#dfe8f7', borderRadius:14, padding:'18px 20px', overflow:'auto', fontFamily:"'JetBrains Mono',monospace", fontSize:12, lineHeight:1.7, breakInside:'avoid', margin:0 }
+    }, lines);
+    return { codeEl };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,3 @@
+# À fusionner dans la section dependencies de ton pubspec.yaml
+dependencies:
+  http: ^1.2.0

@@ -1,0 +1,24 @@
+
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased}
+  body{background:#05070f;font-family:'Satoshi',sans-serif}
+  ::-webkit-scrollbar{width:0;height:0}
+  @keyframes tcSpin{to{transform:rotate(360deg)}}
+  @keyframes tcPulse{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:1;transform:scale(1.12)}}
+  @keyframes tcFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+  @keyframes tcSheetUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+  @keyframes tcFade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes tcScaleIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
+  @keyframes tcGlow{0%,100%{opacity:.4}50%{opacity:.8}}
+  @keyframes tcRingDash{from{stroke-dashoffset:0}}
+  @keyframes tcShimmer{to{background-position:200% 0}}
+  .tc-screen{animation:tcFade .5s cubic-bezier(.2,.8,.2,1) both}
+  .tc-stagger>*{animation:tcFade .55s cubic-bezier(.2,.8,.2,1) both}
+  .tc-stagger>*:nth-child(1){animation-delay:.04s}
+  .tc-stagger>*:nth-child(2){animation-delay:.1s}
+  .tc-stagger>*:nth-child(3){animation-delay:.16s}
+  .tc-stagger>*:nth-child(4){animation-delay:.22s}
+  .tc-stagger>*:nth-child(5){animation-delay:.28s}
+  .tc-stagger>*:nth-child(6){animation-delay:.34s}
+  .tc-stagger>*:nth-child(7){animation-delay:.4s}
+  .tc-press{transition:transform .12s ease,filter .2s ease}
+  .tc-press:active{transform:scale(.96)}
